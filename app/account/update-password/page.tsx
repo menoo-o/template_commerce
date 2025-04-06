@@ -2,11 +2,14 @@
 import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { updatePassword } from "./actions";
+import { Suspense } from 'react'
 
 
-export default function UpdatePasswordPage() {
+function PasswordReset() {
+
   const searchParams = useSearchParams();
   const token = searchParams.get("code"); // Use "code", not "token"
+
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -76,4 +79,14 @@ export default function UpdatePasswordPage() {
     </div>
   </div>
 );
+}
+
+export default function UpdatePasswordPage(){
+  return(
+    <>
+      <Suspense>
+        <PasswordReset />
+      </Suspense>
+    </>
+  )
 }
