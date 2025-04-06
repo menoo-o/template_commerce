@@ -27,7 +27,7 @@ export async function register( prevState: RegisterState,  formData: FormData): 
  .maybeSingle();
 
 if (existingUser) {
- return { error: "Email already in use. Please log in instead." };
+ return { error: "Email already in use. Please log in instead or enter a new email." };
 }
 
 // Step 2: Proceed with signup

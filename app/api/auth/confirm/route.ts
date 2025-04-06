@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       data: { user },
     } = await supabase.auth.getUser();
 
-
+    // email magic link
     const { error } = await supabase.auth.verifyOtp({
       type,
       token_hash,
