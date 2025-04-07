@@ -3,7 +3,7 @@
 
 import { RegisterState } from "@/lib/types/types";
 import { useActionState } from "react";
-import { register } from "./actions";
+import { register } from "@/app/account/signup/actions";
 import Link from "next/link";
 
 export default function SignUpForm() {
