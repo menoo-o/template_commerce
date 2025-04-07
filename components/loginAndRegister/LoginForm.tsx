@@ -13,11 +13,13 @@ export default function LoginForm() {
   // Google Sign-In button
   const handleGoogleSignIn = async () => {
     const supabase = createClient();
+    const redirectTo = process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3000/auth/callback'
+      : 'https://template-setup.vercel.app/auth/callback';
+    console.log('OAuth redirectTooooooooooooo:', redirectTo); // Debug
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: {
-        redirectTo: `https://template-setup.vercel.app/auth/callback`, // Adjust the URL here based on your callback route
-      },
+      options: { redirectTo },
     });
   };
 
