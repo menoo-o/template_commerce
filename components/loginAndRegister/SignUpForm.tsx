@@ -19,7 +19,7 @@ export default function SignUpForm() {
         <form action={formAction} className="space-y-5">
           <div>
             <label htmlFor="firstname" className="block text-sm font-medium mb-1">
-             Enter First Name
+             First Name
             </label>
             <input
               id="firstname"
