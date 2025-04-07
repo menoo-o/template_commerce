@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server"; 
-import LoginForm from "./LoginForm"; // Import Client Component
+import LoginForm from "@/components/loginAndRegister/LoginForm";
 import './styles.css'
 
 export default async function LoginPage() {
