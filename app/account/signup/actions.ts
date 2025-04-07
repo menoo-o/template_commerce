@@ -21,15 +21,15 @@ export async function register( prevState: RegisterState,  formData: FormData): 
 
  // Step 1: Check if email already exists
 //  change this table because auth.users table is not accessible
- const { data: existingUser } = await supabase
- .from("auth.users")
- .select("email")
- .eq("email", email.toLowerCase()) // Ensure case-insensitive check
- .maybeSingle();
+//  const { data: existingUser } = await supabase
+//  .from("auth.users")
+//  .select("email")
+//  .eq("email", email.toLowerCase()) // Ensure case-insensitive check
+//  .maybeSingle();
 
-if (existingUser) {
- return { error: "Email already in use. Please log in instead or enter a new email." };
-}
+// if (existingUser) {
+//  return { error: "Email already in use. Please log in instead or enter a new email." };
+// }
 
 // Step 2: Proceed with signup
 const { error } = await supabase.auth.signUp({ email, password });
