@@ -63,14 +63,15 @@ export default function LoginForm() {
             {isPending ? "Logging in..." : "Log in"}
           </button>
 
-          {/* Google Sign In Button */}
           <button
-            type="button" // Use 'button' to prevent default form submission
+            type="button"
             onClick={handleGoogleSignIn}
-            className="w-full mt-3 bg-white text-black border border-gray-300 rounded-md px-4 py-2 hover:shadow"
+            className="w-full mt-3 border border-gray-300 rounded-md px-4 py-2 transition-all duration-300 relative overflow-hidden group bg-white text-black"
           >
-            Sign in with Google
+             <span className="relative z-10">Sign in with Google</span>
+  
           </button>
+
 
           {state.error && (
             <p className="text-sm text-red-600 text-center">{state.error}</p>

@@ -18,21 +18,31 @@ export async function register( prevState: RegisterState,  formData: FormData): 
     return { error: "Incomplete Fields" };
   }
 
+   // Step 1: Sign up with metadata
+   const { data, error } = await supabase.auth.signUp({ 
+    email, 
+    password,
+    options: {
+      data: {
+        first_name: firstName,
+        last_name: lastname
+      }
+    }
+  });
 
- // Step 1: Check if email already exists
-//  change this table because auth.users table is not accessible
-//  const { data: existingUser } = await supabase
-//  .from("auth.users")
-//  .select("email")
-//  .eq("email", email.toLowerCase()) // Ensure case-insensitive check
-//  .maybeSingle();
 
-// if (existingUser) {
-//  return { error: "Email already in use. Please log in instead or enter a new email." };
-// }
+   // Immediately update user_info if needed
+   if (data.user) {
+    await supabase
+      .from('userinfo')
+      .upsert({
+        id: data.user.id,
+        first_name: firstName,
+        last_name: lastname,
+        email: email
+      });
+  }
 
-// Step 2: Proceed with signup
-const { error } = await supabase.auth.signUp({ email, password });
 
 if (error) {
  return { error: error.message }; // Return error back to UI
