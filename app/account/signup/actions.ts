@@ -20,6 +20,7 @@ export async function register( prevState: RegisterState,  formData: FormData): 
 
 
  // Step 1: Check if email already exists
+//  change this table because auth.users table is not accessible
  const { data: existingUser } = await supabase
  .from("auth.users")
  .select("email")
