@@ -2,6 +2,21 @@ import { NextResponse } from 'next/server'
 // The client you created from the Server-Side Auth instructions
 import { createClient } from '@/utils/supabase/server'
 
+// Helper function to split full_name
+function splitName(fullName?: string): { firstName: string; lastName: string } {
+  if (!fullName || typeof fullName !== 'string') {
+    return { firstName: 'Unknown', lastName: 'Unknown' };
+  }
+  const parts = fullName.trim().split(/\s+/);
+  if (parts.length === 1) {
+    return { firstName: parts[0], lastName: 'Unknown' };
+  }
+  return {
+    firstName: parts[0],
+    lastName: parts.slice(1).join(' ') || 'Unknown',
+  };
+}
+
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
@@ -25,24 +40,22 @@ export async function GET(request: Request) {
   // Handle successful auth
   const user = data.user;
   if (user) {
-    const { email, id } = user;
-    const metadata = user.user_metadata; // Google profile data
-    const firstName = metadata.given_name || metadata.first_name || 'Unknown';
-    const lastName = metadata.family_name || metadata.last_name || 'Unknown';
+    const metadata = user.user_metadata;
+    const { firstName: splitFirst, lastName: splitLast } = splitName(metadata?.full_name);
 
-    // Upsert into userinfo
+    // Upsert with smarter name extraction
     const { error: upsertError } = await supabase
       .from('userinfo')
       .upsert({
-        id,
-        first_name: firstName,
-        last_name: lastName,
-        email,
+        id: user.id,
+        email: user.email,
+        first_name: metadata?.first_name || metadata?.given_name || splitFirst,
+        last_name: metadata?.last_name || metadata?.family_name || splitLast,
       });
 
     if (upsertError) {
       console.error('Upsert error:', upsertError.message);
-      // Log but proceed—upsert failure shouldn’t block login
+      // Log but proceed
     }
   }
 
