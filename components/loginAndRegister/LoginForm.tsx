@@ -16,10 +16,14 @@ export default function LoginForm() {
     const redirectTo = process.env.NODE_ENV === 'development'
       ? 'http://localhost:3000/auth/callback'
       : 'https://template-setup.vercel.app/auth/callback';
-    console.log('OAuth redirectTooooooooooooo:', redirectTo); // Debug
+    
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo },
+      options: { 
+        redirectTo,
+        scopes:'email profile', //// Matches /auth/userinfo.email, /auth/userinfo.profile
+      
+      },
     });
   };
 

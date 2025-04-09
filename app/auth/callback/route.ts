@@ -51,6 +51,7 @@ export async function GET(request: Request) {
         email: user.email,
         first_name: metadata?.first_name || metadata?.given_name || splitFirst,
         last_name: metadata?.last_name || metadata?.family_name || splitLast,
+        email_confirmed_at: user.email_confirmed_at, // Add this
       });
 
     if (upsertError) {

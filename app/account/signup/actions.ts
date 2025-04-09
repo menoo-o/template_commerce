@@ -39,7 +39,8 @@ export async function register( prevState: RegisterState,  formData: FormData): 
         id: data.user.id,
         first_name: firstName,
         last_name: lastname,
-        email: email
+        email: email,
+        email_confirmed_at: data.user.email_confirmed_at, // From user object
       });
   }
 
