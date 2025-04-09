@@ -12,7 +12,7 @@ export default function Home() {
             href="/account/login"
             className="inline-block w-full bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 transition"
           >
-            Go to Login Page
+            Go to the Login Page
           </Link>
 
           <Link
