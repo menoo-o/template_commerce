@@ -1,21 +1,11 @@
+// Google Auth Confirm
+
 import { NextResponse } from 'next/server'
 // The client you created from the Server-Side Auth instructions
 import { createClient } from '@/utils/supabase/server'
+import splitName from '@/utils/helperfns';
 
-// Helper function to split full_name
-function splitName(fullName?: string): { firstName: string; lastName: string } {
-  if (!fullName || typeof fullName !== 'string') {
-    return { firstName: 'Unknown', lastName: 'Unknown' };
-  }
-  const parts = fullName.trim().split(/\s+/);
-  if (parts.length === 1) {
-    return { firstName: parts[0], lastName: 'Unknown' };
-  }
-  return {
-    firstName: parts[0],
-    lastName: parts.slice(1).join(' ') || 'Unknown',
-  };
-}
+
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -39,7 +29,7 @@ export async function GET(request: Request) {
 
   // Handle successful auth
   const user = data.user;
-  if (user) {
+  if (user && user.email_confirmed_at) { // Only upsert confirmed users
     const metadata = user.user_metadata;
     const { firstName: splitFirst, lastName: splitLast } = splitName(metadata?.full_name);
 
@@ -51,7 +41,7 @@ export async function GET(request: Request) {
         email: user.email,
         first_name: metadata?.first_name || metadata?.given_name || splitFirst,
         last_name: metadata?.last_name || metadata?.family_name || splitLast,
-        email_confirmed_at: user.email_confirmed_at, // Add this
+        email_confirmed_at: user.email_confirmed_at, // From user object
       });
 
     if (upsertError) {

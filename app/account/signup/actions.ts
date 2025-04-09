@@ -19,31 +19,19 @@ export async function register( prevState: RegisterState,  formData: FormData): 
   }
 
    // Step 1: Sign up with metadata
-   const { data, error } = await supabase.auth.signUp({ 
+   const {  error } = await supabase.auth.signUp({ 
     email, 
     password,
     options: {
       data: {
         first_name: firstName,
-        last_name: lastname
-      }
-    }
-  });
-
-
-   // Immediately update user_info if needed
-   if (data.user) {
-    await supabase
-      .from('userinfo')
-      .upsert({
-        id: data.user.id,
-        first_name: firstName,
         last_name: lastname,
-        email: email,
-        email_confirmed_at: data.user.email_confirmed_at, // From user object
-      });
-  }
-
+      },
+      emailRedirectTo: process.env.NODE_ENV === 'development'
+        ? 'http://localhost:3000/api/auth/confirm'
+        : 'https://template-setup.vercel.app/api/auth/confirm',
+    },
+  });
 
 if (error) {
  return { error: error.message }; // Return error back to UI
