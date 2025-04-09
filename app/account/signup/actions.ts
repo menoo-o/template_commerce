@@ -18,7 +18,7 @@ export async function register( prevState: RegisterState,  formData: FormData): 
     return { error: "Incomplete Fields" };
   }
 
-  const {  error } = await supabase.auth.signUp({
+  const { error } = await supabase.auth.signUp({
     email,
     password,
     options: {
