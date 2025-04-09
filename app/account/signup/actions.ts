@@ -27,8 +27,8 @@ export async function register( prevState: RegisterState,  formData: FormData): 
         last_name: lastname,
       },
       emailRedirectTo: process.env.NODE_ENV === 'development'
-        ? 'http://localhost:3000/api/auth/confirm'
-        : 'https://template-setup.vercel.app/api/auth/confirm',
+        ? 'http://localhost:3000/auth/confirm'
+        : 'https://template-setup.vercel.app/auth/confirm',
     },
   });
 
