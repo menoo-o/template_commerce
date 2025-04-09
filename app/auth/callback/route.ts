@@ -1,56 +1,25 @@
-// Google Auth Confirm
-
-import { NextResponse } from 'next/server'
-// The client you created from the Server-Side Auth instructions
-import { createClient } from '@/utils/supabase/server'
-import splitName from '@/utils/helperfns';
-
-
+// app/auth/callback/route.ts
+import { createClient } from '@/utils/supabase/server';
+import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
-  const next = searchParams.get('next') ?? '/private'; // Default redirect to /private
+  const next = searchParams.get('next') ?? '/private';
 
-  // If no code is provided, redirect to login with error
   if (!code) {
     return NextResponse.redirect(`${origin}/login?error=no_code`);
   }
 
   const supabase = await createClient();
 
-  // Exchange OAuth code for session
-  const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-
+  const {  error } = await supabase.auth.exchangeCodeForSession(code);
   if (error) {
-    console.error('Code exchange error:', error.message);
-    return NextResponse.redirect(`${origin}/login?error=auth_failed`);
+    console.error('Code exchange error:', error);
+    return NextResponse.redirect(`${origin}/login?error=auth_failed&message=${encodeURIComponent(error.message)}`);
   }
 
-  // Handle successful auth
-  const user = data.user;
-  if (user && user.email_confirmed_at) { // Only upsert confirmed users
-    const metadata = user.user_metadata;
-    const { firstName: splitFirst, lastName: splitLast } = splitName(metadata?.full_name);
-
-    // Upsert with smarter name extraction
-    const { error: upsertError } = await supabase
-      .from('userinfo')
-      .upsert({
-        id: user.id,
-        email: user.email,
-        first_name: metadata?.first_name || metadata?.given_name || splitFirst,
-        last_name: metadata?.last_name || metadata?.family_name || splitLast,
-        email_confirmed_at: user.email_confirmed_at, // From user object
-      });
-
-    if (upsertError) {
-      console.error('Upsert error:', upsertError.message);
-      // Log but proceed
-    }
-  }
-
-  // Redirect based on environment
+  // Trigger handles userinfo population—no manual upsert needed
   const forwardedHost = request.headers.get('x-forwarded-host');
   const isLocalEnv = process.env.NODE_ENV === 'development';
 
