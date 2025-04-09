@@ -6,7 +6,10 @@ export async function sendResetEmail(email: string) {
 
 //  Send reset password email
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${window.location.origin}/account/update-password`,
+    redirectTo: process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3000/auth/confirm'
+    : 'https://template-setup.vercel.app/auth/confirm',
+
   });
 
   return { error: error?.message || null };
