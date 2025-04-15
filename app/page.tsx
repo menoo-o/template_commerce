@@ -16,11 +16,10 @@ export default function Home() {
           </Link>
 
           <Link
-            href="/private"
+            href="/"
             className="inline-block w-full text-orange-500 border border-orange-500 py-2 px-4 rounded-md hover:bg-orange-50 transition"
           >
-            Already Logged In? Go to Dashboard
-          </Link>
+            Already Logged In? Lets do some shopping          </Link>
         </div>
       </div>
     </main>

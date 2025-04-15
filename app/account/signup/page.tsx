@@ -8,7 +8,7 @@ export default async function RegisterPage() {
   const { data } = await supabase.auth.getUser();
 
   if (data?.user) {
-    redirect("/private"); // Redirect if already logged in
+    redirect("/"); // Redirect if already logged in
   }
  
   return <SignUpForm />;
