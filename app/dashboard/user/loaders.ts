@@ -18,6 +18,17 @@ export async function getUserInfo(): Promise<UserInfo | null> {
     redirect('/account/login');
   }
 
+  const { data: role, error: roleError } = await supabase
+  .from('roles')
+  .select('authority')
+  .eq('user_id', user.id)
+  .single();
+
+if (roleError || role?.authority !== 'user') {
+  console.error('You are an admin. Go to your own dashboard', roleError?.message);
+  redirect('/dashboard/admin');
+}
+
   const { data, error: infoError } = await supabase
     .from('userinfo')
     .select('id, first_name, last_name, email, email_confirmed_at')
