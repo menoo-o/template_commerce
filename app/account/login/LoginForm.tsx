@@ -53,7 +53,7 @@ export default function LoginForm() {
         className="bg-blue-500 text-white p-2 mt-2 rounded"
         disabled={isPending}
       >
-        {isPending ? 'Logging in...' : 'Log In'}
+        {isPending ? 'Logging in....' : 'Log In'}
       </button>
     </form>
   );
