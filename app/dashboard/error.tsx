@@ -1,4 +1,3 @@
-// Error boundary
 'use client';
 
 import { useEffect } from 'react';

@@ -10,17 +10,6 @@ export async function getAdminDashboardData() {
     redirect('/account/login');
   }
 
-  const { data: role, error: roleError } = await supabase
-    .from('roles')
-    .select('authority')
-    .eq('user_id', user.id)
-    .single();
-
-  if (roleError || role?.authority !== 'admin') {
-    console.error('Access denied: Not an admin', roleError?.message);
-    redirect('/dashboard/user');
-  }
-
   const { data: clients, error: clientsError } = await supabase
     .from('userinfo')
     .select('id, first_name, last_name, email, email_confirmed_at')

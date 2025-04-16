@@ -1,5 +1,3 @@
-// # Shared layout (header, logout)
-
 import { Suspense } from 'react';
 import LogoutButton from '@/components/LogoutButton/LogoutBtn';
 
@@ -14,7 +12,6 @@ export default function DashboardLayout({
         <h1 className="text-xl">Dashboard</h1>
         <LogoutButton />
       </header>
-      
       <main className="p-4">
         <Suspense fallback={<div>Loading...</div>}>
           {children}

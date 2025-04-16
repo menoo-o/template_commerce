@@ -1,5 +1,7 @@
 import { getAdminDashboardData } from './loaders';
 
+
+
 export default async function AdminDashboard() {
   const clients = await getAdminDashboardData();
 
