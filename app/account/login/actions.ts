@@ -58,5 +58,5 @@ export async function login(prevState: LoginState, formData: FormData): Promise<
   await getUserRoleAndRedirect();
 
   // Never reached due to redirect, but satisfies TypeScript
-  return {};
+
 }
