@@ -2,10 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
-
-export interface LoginState {
-  error?: string;
-}
+import { LoginState } from '@/lib/types/types';
 
 // Reusable function to check role and redirect
 export async function getUserRoleAndRedirect() {

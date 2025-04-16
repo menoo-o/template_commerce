@@ -1,7 +1,8 @@
-//Login Page 
+//Login Page export type LoginState = {
+ 
 export type LoginState = {
-    error: string | null;
-  };
+  error: string | null;
+};
 
 // SignUp Page
 export type RegisterState = {
