@@ -7,7 +7,7 @@ export default async function UserDashboard() {
   const info = await getUserInfo();
 
   if (!info) {
-    throw new Error('Failed to load profile info.');
+    throw new Error('Failed to load profile info. Pls try again');
   }
 
   return <ProfileInfo info={info} />;
