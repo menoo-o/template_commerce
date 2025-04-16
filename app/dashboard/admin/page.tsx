@@ -1,17 +1,16 @@
-import { getAdminDashboardData } from './actions';
-import LogoutButton from '@/utils/logoutbtn';
+import { getAdminDashboardData } from './loaders';
 
 export default async function AdminDashboard() {
   const clients = await getAdminDashboardData();
 
   if (!clients.length) {
-    return <div>No users found or error loading data.</div>;
+    throw new Error('No users found or error loading data.');
   }
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl">Admin Dashboard</h1>
-      <table className="mt-4 w-full border">
+    <div>
+      <h2 className="text-xl mb-4">All Users</h2>
+      <table className="w-full border">
         <thead>
           <tr>
             <th className="border p-2">First Name</th>
@@ -33,8 +32,6 @@ export default async function AdminDashboard() {
           ))}
         </tbody>
       </table>
-      <br />
-      <LogoutButton />
     </div>
   );
 }
