@@ -27,14 +27,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/dashboard/user', request.url));
   }
 
-  //if i comment this, it works out, otherwise if admins logs middleware doesnt let admin open it dashboard
-  // Admin: Allow /dashboard/admin, redirect from /dashboard/user
-  // if (role.authority === 'admin') {
-  //   if (pathname.startsWith('/dashboard/user')) {
-  //     return NextResponse.redirect(new URL('/dashboard/admin', request.url));
-  //   }
-  //   return NextResponse.next(); // Allow /dashboard/admin
-  // }
+ 
 
   // Client: Allow /dashboard/user, redirect from /dashboard/admin
   if (role.authority === 'client') {

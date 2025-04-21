@@ -6,8 +6,9 @@ export type LoginState = {
 
 // SignUp Page
 export type RegisterState = {
-    error: string | null;
-  };
+  error: string | null;
+  success?: boolean; // <-- optional success flag
+};
 
 export interface UserInfo {
     id: string;
