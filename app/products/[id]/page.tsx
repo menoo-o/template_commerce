@@ -2,7 +2,7 @@
 
 // app/products/[id]/page.tsx
 import { AddToCartButton } from '@/components/ADC/AddToCartButton';
-import { CartSheet } from '@/components/CartNotify/Sheet';
+import CartSheet from '@/components/CartNotify/Sheet'
 
 export default function ProductPage({ params }: { params: { id: string } }) {
   // Mock product data (replace with API/database)
