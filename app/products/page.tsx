@@ -11,9 +11,7 @@ export default function ProductsPage() {
 
   return (
   <>
-
     <div className="min-h-screen bg-white text-black flex flex-col">
-    
       {/* Products Section */}
       <main className="flex-1 p-8">
         <h1 className="text-3xl font-bold mb-8 text-center">Products</h1>
@@ -27,11 +25,7 @@ export default function ProductsPage() {
           ))}
         </ul>
       </main>
-  
-      {/* Cart Sidebar or Sheet */}
-   
     </div>
- 
   </>
 );
 }

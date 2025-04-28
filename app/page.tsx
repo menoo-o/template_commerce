@@ -16,10 +16,12 @@ export default function Home() {
           </Link>
 
           <Link
+            // go to the shopping page
             href="/products"
             className="inline-block w-full text-orange-500 border border-orange-500 py-2 px-4 rounded-md hover:bg-orange-50 transition"
           >
-            Login Later? Lets do some shopping          </Link>
+            Login Later? Lets do some shopping          
+          </Link>
         </div>
       </div>
     </main>
