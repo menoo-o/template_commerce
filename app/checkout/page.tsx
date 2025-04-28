@@ -4,7 +4,7 @@ import React from 'react'
 function CheckOutpage() {
   return (
     <div>
-      this is the checkout page
+     Checkout Page loading...
     </div>
   )
 }
