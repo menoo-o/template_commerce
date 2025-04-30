@@ -1,5 +1,6 @@
 // next.config.js
 module.exports = {
+
   async headers() {
     return [
       {
@@ -14,4 +15,11 @@ module.exports = {
       },
     ];
   },
+
+  images: {
+    domains: ['dokfkveanqiiqwlljlao.supabase.co'], // Add your Supabase domain here
+  },
+
+
+
 };

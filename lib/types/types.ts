@@ -45,3 +45,26 @@ export interface CartStore {
   setIsSheetOpen: (open: boolean) => void; //to set the value of isSheetOpen
   getTotalPrice: () => number; // New computed property
 };
+
+
+// All Collections, Per Collection Content, Single Page Content
+
+export interface Collection {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  image_url: string;
+}
+
+export type CollectionHero = Collection;
+export type CollectionCard = Collection;
+
+ 
+ 
+ export interface ProductCard {
+   name: string;
+   slug: string;
+   image_url: string;
+   price: number;
+ }

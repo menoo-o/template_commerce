@@ -1,0 +1,1 @@
+// [collectionSlug]/products/[productSlug]/page.tsx — displays individual product detail.
