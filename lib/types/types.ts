@@ -62,9 +62,15 @@ export type CollectionCard = Collection;
 
  
  
- export interface ProductCard {
-   name: string;
-   slug: string;
-   image_url: string;
-   price: number;
- }
+export interface ProductCard {
+  name: string;
+  slug: string;
+  image_url: string;
+  price: string;
+}
+
+export interface ProductCardProps extends ProductCard {
+  collectionSlug: string;
+}
+
+
