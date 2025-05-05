@@ -22,7 +22,7 @@ export async function middleware(request: NextRequest) {
     .single();
 
   if (roleError || !role) {
-    console.error('Role check failed:', roleError?.message);
+    // console.error('Role check failed:', roleError?.message);
     // Fallback to user dashboard
     return NextResponse.redirect(new URL('/dashboard/user', request.url));
   }
