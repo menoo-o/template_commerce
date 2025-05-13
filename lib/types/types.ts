@@ -74,3 +74,19 @@ export interface ProductCardProps extends ProductCard {
 }
 
 
+export interface SingleDisplayCard {
+  id: string;
+  name: string;
+  slug: string;
+  image_url: string;
+  price: string;
+  description: string;
+  collection_id: string;
+}
+
+export interface ProductVariant {
+  id: string;
+  product_id: string;
+  size: string;
+  price: number;
+}
