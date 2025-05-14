@@ -8,7 +8,7 @@ function Navbar() {
       <div className="text-2xl font-bold">MyShop</div>
       <div className="flex space-x-6">
         <Link href="/" className="hover:underline">Home</Link>
-        <Link href="/products" className="hover:underline">Shop</Link>
+        <Link href="/collections/all-products" className="hover:underline">Shop</Link>
         <Link href="/account/login" className="hover:underline">Login</Link>
         <Link href="/cart" className="hover:underline">🛒 Cart</Link>
       </div>

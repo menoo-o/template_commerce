@@ -37,7 +37,7 @@ function Cartpage() {
               </button>
 
               <Link
-                href='/products'
+                href='/collections/all-products'
                 className="text-center text-orange-500 hover:text-orange-600 font-semibold transition"
               >
                 ← Continue Shopping
