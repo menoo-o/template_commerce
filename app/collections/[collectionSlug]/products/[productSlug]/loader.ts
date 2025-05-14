@@ -2,23 +2,7 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server';
-
-export interface ProductVariant {
-  id: string;
-  size: string;
-  price: number;
-}
-export interface SingleDisplayCard {
-  id: string;
-  name: string;
-  slug: string;
-  image_url: string;
-  price: number;
-  description: string;
-  collection_id: string;
-  product_variants?: ProductVariant[];
-}
-
+import { SingleDisplayCard } from '@/lib/types/types';
 
 
 

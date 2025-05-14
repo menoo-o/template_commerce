@@ -17,20 +17,32 @@ export interface UserInfo {
     email: string;
     email_confirmed_at: string | null;
   }
+
+
   
 
 
 // How a Single Product would look like 
+
+export interface ProductVariant {
+  id: string;
+  size: string;
+  price: number;
+}
+
 export interface Product {
   id: string;
   name: string;
   price: number;
+  product_variants?: ProductVariant[];
 };
+
 
 // Your Cart: would compromise of the Product mentioned above  
 export interface CartItem {
   product: Product;
   quantity: number;
+  variant?: ProductVariant;
 };
 
 
@@ -38,7 +50,7 @@ export interface CartItem {
 export interface CartStore {
   cart: CartItem[]; // Your cart would be treated as an array 
   isSheetOpen: boolean;  //to check if the sheet (notifying when an item is added) is open or not
-  addToCart: (product: Product) => void; // adding to the cart fn
+  addToCart: (product: Product, variant?: ProductVariant) => void;  // adding to the cart fn
   removeFromCart: (productId: string) => void; //removing something from the cart fn
   clearCart: () => void; // removing everything from the cart fn
   updateQuantity: (productId: string, quantity: number) => void; // increasing or decreasing qty from the cart
@@ -79,14 +91,16 @@ export interface SingleDisplayCard {
   name: string;
   slug: string;
   image_url: string;
-  price: string;
+  price: number;
   description: string;
   collection_id: string;
+  product_variants?: ProductVariant[];
 }
 
-export interface ProductVariant {
-  id: string;
-  product_id: string;
-  size: string;
-  price: number;
+
+export interface SinglePageProps {
+  params: {
+    collectionSlug: string;
+    productSlug: string;
+  };
 }

@@ -22,7 +22,7 @@ export default function CartWrapper() {
                 <div>
                   <p className="font-semibold text-lg">{item.product.name}</p>
                   <p className="text-sm text-neutral-500">
-                    ${item.product.price.toFixed(2)}
+                    ${item.variant?.price.toFixed(2) ?? item.product.price.toFixed(2)}
                   </p>
                 </div>
 

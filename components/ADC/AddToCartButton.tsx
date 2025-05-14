@@ -1,20 +1,18 @@
 // components/AddToCartButton.tsx
 import { useCartStore } from '@/stores/useCartStore';
+import { ProductVariant, Product } from '@/lib/types/types';
 
 type AddToCartButtonProps = {
-  product: {
-    id: string;
-    name: string;
-    price: number;
-  };
+  product: Product;
+  variant?: ProductVariant;
 };
 
-export function AddToCartButton({ product }: AddToCartButtonProps) {
+export function AddToCartButton({ product, variant }: AddToCartButtonProps) {
   const { addToCart } = useCartStore();
 
   return (
     <button
-      onClick={() => addToCart(product)}
+      onClick={() => addToCart(product, variant)}
       className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
     >
       Add to Cart

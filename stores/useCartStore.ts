@@ -4,60 +4,9 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage, devtools } from 'zustand/middleware';
 import { produce } from 'immer';
-import { CartStore } from '@/lib/types/types'
+// import { CartStore } from '@/lib/types/types'
+import { Product, ProductVariant, CartStore } from '@/lib/types/types';
 
-
-
-// export const useCartStore = create<CartStore>()(
-//   devtools(
-//     persist(  //using persist middleware will save the cart
-//       (set, get) => ({
-//         cart: [], //initially empty
-//         isSheetOpen: false,
-//         addToCart: (product) =>
-//           set(
-//             produce((state: CartStore) => {
-//               const existingItem = state.cart.find((item) => item.product.id === product.id);
-//               if (existingItem) {
-//                 existingItem.quantity += 1;
-//                 state.isSheetOpen = true;
-//               } else {
-//                 state.cart.push({ product, quantity: 1 });
-//                 state.isSheetOpen = true;
-//               }
-//             })
-//           ),
-//         removeFromCart: (productId) => set(produce((state: CartStore) => { state.cart = state.cart.filter((item) => item.product.id !== productId); })),
-//         clearCart: () => set(produce((state: CartStore) => { state.cart = []; })),
-//         updateQuantity: (productId, quantity) =>
-//           set(
-//             produce((state: CartStore) => {
-//               const item = state.cart.find((item) => item.product.id === productId);
-//               if (item && quantity > 0) {
-//                 item.quantity = quantity;
-//               } else if (item && quantity === 0) {
-//                 state.cart = state.cart.filter((item) => item.product.id !== productId);
-//               }
-//             })
-//           ),
-//           setIsSheetOpen: (open) => {
-//             console.log("Before:", useCartStore.getState().isSheetOpen); // Debug log
-//             set(produce((state: CartStore) => { state.isSheetOpen = open; }));
-//             console.log("After:", useCartStore.getState().isSheetOpen); // Debug log
-//           },
-//         getTotalPrice: () => {
-//           const state = get();
-//           return state.cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
-//         },
-//       }),
-//       {
-//         name: 'cart-storage',
-//         storage: createJSONStorage(() => localStorage),
-//       }
-//     ),
-//     { name: 'CartStore' }
-//   )
-// );
 
 export const useCartStore = create<CartStore>()(
   // Wrap the store with devtools for Redux DevTools integration
@@ -71,28 +20,25 @@ export const useCartStore = create<CartStore>()(
         isSheetOpen: false, // Controls cart sidebar visibility
 
         // Action: Add product to cart
-        addToCart: (product) =>
-          set(
-            // Using Immer's produce for immutable updates
-            produce((state: CartStore) => {
-              // Check if product already exists in cart
-              const existingItem = state.cart.find(
-                (item) => item.product.id === product.id
-              );
-              
-              if (existingItem) {
-                // If exists, increment quantity
-                existingItem.quantity += 1;
-                // Open cart sidebar
+        addToCart: (product, variant) =>
+            set(
+              produce((state: CartStore) => {
+                 // Find existing item with same product AND same variant (if any)
+                const existingItem = state.cart.find(
+                  (item) =>
+                    item.product.id === product.id &&
+                    (variant ? item.variant?.id === variant.id : !item.variant)
+                );
+
+                if (existingItem) {
+                  existingItem.quantity += 1;
+                } else {
+                  state.cart.push({ product, variant, quantity: 1 });
+                }
+
                 state.isSheetOpen = true;
-              } else {
-                // If new, add to cart with quantity 1
-                state.cart.push({ product, quantity: 1 });
-                // Open cart sidebar
-                state.isSheetOpen = true;
-              }
-            })
-          ),
+              })
+            ),
 
         // Action: Remove product from cart
         removeFromCart: (productId) =>
@@ -149,15 +95,13 @@ export const useCartStore = create<CartStore>()(
         },
 
         // Getter: Calculate total cart price
-        getTotalPrice: () => {
-          // Get current state
-          const state = get();
-          // Sum all items (price * quantity)
-          return state.cart.reduce(
-            (total, item) => total + item.product.price * item.quantity,
-            0
-          );
-        },
+       getTotalPrice: () => {
+        const state = get();
+        return state.cart.reduce((total, item) => {
+          const price = item.variant?.price ?? item.product.price;
+          return total + price * item.quantity;
+        }, 0);
+      },
       }),
       {
         // Persistence config

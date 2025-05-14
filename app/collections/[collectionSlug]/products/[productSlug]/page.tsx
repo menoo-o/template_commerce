@@ -1,39 +1,21 @@
 "use client";
 
-export interface ProductVariant {
-  id: string;
-  size: string;
-  price: number;
-}
-
-export interface SingleDisplayCard {
-  id: string;
-  name: string;
-  slug: string;
-  image_url: string;
-  price: number;
-  description: string;
-  collection_id: string;
-  product_variants?: ProductVariant[];
-}
-
 
 import { useEffect, useState } from "react";
 import { notFound } from "next/navigation";
 import { SinglePageData } from "./loader";
 import { useParams } from "next/navigation";
-
+import { SinglePageProps } from "@/lib/types/types";
 import Image from "next/image";
+import { SingleDisplayCard } from '@/lib/types/types';
+// app/products/page.tsx
+import { AddToCartButton } from '@/components/ADC/AddToCartButton';
 
-interface PageProps {
-  params: {
-    collectionSlug: string;
-    productSlug: string;
-  };
-}
+
+
 
 export default function SingleProductPage() {
-  const params = useParams<{collectionSlug:string, productSlug: string}>()
+   const params = useParams<SinglePageProps['params']>();
 
   const [product, setProduct] = useState<SingleDisplayCard | null>(null);
   const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
@@ -107,7 +89,7 @@ export default function SingleProductPage() {
                       setSelectedPrice(variant.price);
                     }}
                   />
-                  {variant.size} – {variant.price} PKR
+                  {variant.size}
                 </label>
               ))}
             </div>
@@ -115,6 +97,7 @@ export default function SingleProductPage() {
         )}
 
         {/* Quantity + Add to Cart */}
+       {/* Quantity + Add to Cart */}
         <div className="flex items-center gap-4">
           <div className="flex items-center border rounded">
             <button className="px-3 py-1 text-xl">-</button>
@@ -126,11 +109,16 @@ export default function SingleProductPage() {
             />
             <button className="px-3 py-1 text-xl">+</button>
           </div>
-          <button className="bg-orange-600 hover:bg-orange-700 text-white px-5 py-2 rounded">
-            Add to Cart
-          </button>
+
+          <AddToCartButton
+            product={product}
+            variant={variants.find(v => v.size === selectedSize)}
+          />
         </div>
+
+
       </div>
+
     </main>
   );
 }
