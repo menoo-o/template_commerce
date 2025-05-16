@@ -51,9 +51,9 @@ export interface CartStore {
   cart: CartItem[]; // Your cart would be treated as an array 
   isSheetOpen: boolean;  //to check if the sheet (notifying when an item is added) is open or not
   addToCart: (product: Product, variant?: ProductVariant) => void;  // adding to the cart fn
-  removeFromCart: (productId: string) => void; //removing something from the cart fn
+  removeFromCart: (product: Product, variant?: ProductVariant) => void; //removing something from the cart fn
   clearCart: () => void; // removing everything from the cart fn
-  updateQuantity: (productId: string, quantity: number) => void; // increasing or decreasing qty from the cart
+ updateQuantity: (product: Product, variant: ProductVariant | undefined, quantity: number) => void; // increasing or decreasing qty from the cart
   setIsSheetOpen: (open: boolean) => void; //to set the value of isSheetOpen
   getTotalPrice: () => number; // New computed property
 };

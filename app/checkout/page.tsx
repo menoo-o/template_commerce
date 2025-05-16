@@ -1,12 +1,145 @@
-// Incomplete Checkout Process
-import React from 'react'
+"use client"
 
-function CheckOutpage() {
+import { useState } from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Info } from "lucide-react";
+
+export default function CheckoutPage() {
+  const [placeType, setPlaceType] = useState("residential");
+  const shipping = 10;
+  const subtotal = 30; // Example subtotal
+
   return (
-    <div>
-     Checkout Page loading...
-    </div>
-  )
-}
+    <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 p-6">
+      {/* LEFT: Delivery Info */}
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold text-orange-600">Delivery Address</h2>
 
-export default CheckOutpage
+        <div className="space-y-2">
+          <label className="font-medium text-black">What kind of place is this going to?</label>
+          <div className="flex flex-wrap gap-3">
+            {["residential", "office", "restaurant", "other"].map((type) => (
+              <button
+                key={type}
+                onClick={() => setPlaceType(type)}
+                className={`px-4 py-2 border rounded-full text-sm capitalize transition ${
+                  placeType === type
+                    ? "bg-orange-500 text-white border-orange-500"
+                    : "bg-white border-gray-300 text-gray-600 hover:bg-gray-100"
+                }`}
+              >
+                {type}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="text-sm text-black font-medium">Country/Region</label>
+            <input
+              type="text"
+              defaultValue="United Kingdom"
+              className="w-full p-2 mt-1 border border-gray-300 rounded"
+              readOnly
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="text-sm text-black font-medium">First Name</label>
+            <input type="text" className="w-full p-2 mt-1 border border-gray-300 rounded" />
+          </div>
+          <div>
+            <label className="text-sm text-black font-medium">Last Name</label>
+            <input type="text" className="w-full p-2 mt-1 border border-gray-300 rounded" />
+          </div>
+        </div>
+
+        <div>
+          <label className="text-sm text-black font-medium">House Number & Street Address</label>
+          <input type="text" className="w-full p-2 mt-1 border border-gray-300 rounded" />
+        </div>
+
+        <div>
+          <label className="text-sm text-black font-medium">Address Line 2 <span className="text-gray-500">(optional)</span></label>
+          <input type="text" className="w-full p-2 mt-1 border border-gray-300 rounded" />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="text-sm text-black font-medium">City</label>
+            <input type="text" className="w-full p-2 mt-1 border border-gray-300 rounded" />
+          </div>
+          <div>
+            <label className="text-sm text-black font-medium">Postcode</label>
+            <input type="text" className="w-full p-2 mt-1 border border-gray-300 rounded" />
+          </div>
+        </div>
+
+        <div>
+          <label className="text-sm text-black font-medium flex items-center gap-2">
+            UK Phone Number
+            <Popover>
+              <PopoverTrigger>
+                <Info className="w-4 h-4 text-gray-500 cursor-pointer" />
+              </PopoverTrigger>
+              <PopoverContent className="text-sm text-gray-700 max-w-xs">
+                In case we need to contact you about your delivery.
+              </PopoverContent>
+            </Popover>
+          </label>
+          <input type="tel" className="w-full p-2 mt-1 border border-gray-300 rounded" />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <input type="checkbox" id="email-offers" />
+          <label htmlFor="email-offers" className="text-sm text-gray-700">
+            Email me with news and offers
+          </label>
+        </div>
+      </div>
+
+      {/* RIGHT: Cart Summary */}
+      <div className="bg-gray-50 p-6 rounded-lg shadow-sm space-y-6">
+        <h2 className="text-xl font-semibold text-black">Your Order</h2>
+
+        {/* Example Items */}
+        <div className="space-y-4 border-b pb-4">
+          <div className="flex justify-between text-sm text-gray-700">
+            <span>Chocolate Chip Cookies x2</span>
+            <span>$12.00</span>
+          </div>
+          <div className="flex justify-between text-sm text-gray-700">
+            <span>Mini Cupcakes x3</span>
+            <span>$18.00</span>
+          </div>
+          <div className="text-right text-sm">
+            <button className="text-orange-500 hover:underline">Change</button>
+          </div>
+        </div>
+
+        {/* Totals */}
+        <div className="space-y-2 text-sm text-gray-700">
+          <div className="flex justify-between">
+            <span>Subtotal</span>
+            <span>${subtotal.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Shipping</span>
+            <span>${shipping.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between font-semibold text-black">
+            <span>Total</span>
+            <span>${(subtotal + shipping).toFixed(2)}</span>
+          </div>
+        </div>
+
+        <button className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-md font-semibold">
+          Proceed to Payment
+        </button>
+      </div>
+    </div>
+  );
+}

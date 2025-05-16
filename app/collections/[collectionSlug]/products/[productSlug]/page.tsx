@@ -60,7 +60,7 @@ export default function SingleProductPage() {
         <p className="text-lg text-gray-700 mb-4">
           From{" "}
           <span className="font-semibold text-black">
-            {selectedPrice !== null ? selectedPrice : product.price} PKR
+            {selectedPrice !== null ? selectedPrice : product.price} $
           </span>
         </p>
 

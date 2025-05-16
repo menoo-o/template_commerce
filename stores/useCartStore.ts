@@ -5,7 +5,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage, devtools } from 'zustand/middleware';
 import { produce } from 'immer';
 // import { CartStore } from '@/lib/types/types'
-import { Product, ProductVariant, CartStore } from '@/lib/types/types';
+import { CartStore } from '@/lib/types/types';
 
 
 export const useCartStore = create<CartStore>()(
@@ -41,15 +41,19 @@ export const useCartStore = create<CartStore>()(
             ),
 
         // Action: Remove product from cart
-        removeFromCart: (productId) =>
-          set(
-            produce((state: CartStore) => {
-              // Filter out the item with matching productId
-              state.cart = state.cart.filter(
-                (item) => item.product.id !== productId
-              );
-            })
-          ),
+       removeFromCart: (product, variant) =>
+  set(
+    produce((state: CartStore) => {
+      state.cart = state.cart.filter((item) => {
+        // If a variant is specified, match both product and variant
+        if (variant) {
+          return !(item.product.id === product.id && item.variant?.id === variant.id);
+        }
+        // If no variant, ensure it's not the base product (no variant)
+        return !(item.product.id === product.id && !item.variant);
+      });
+    })
+  ),
 
         // Action: Empty the cart completely
         clearCart: () =>
@@ -61,26 +65,26 @@ export const useCartStore = create<CartStore>()(
           ),
 
         // Action: Update product quantity
-        updateQuantity: (productId, quantity) =>
-          set(
-            produce((state: CartStore) => {
-              // Find the item in cart
-              const item = state.cart.find(
-                (item) => item.product.id === productId
-              );
-              
-              if (item && quantity > 0) {
-                // Update quantity if valid
-                item.quantity = quantity;
-              } else if (item && quantity === 0) {
-                // Remove if quantity set to 0
-                state.cart = state.cart.filter(
-                  (item) => item.product.id !== productId
-                );
-              }
-            })
-          ),
+       updateQuantity: (product, variant, quantity) =>
+        set(
+          produce((state: CartStore) => {
+            const item = state.cart.find(
+              (item) =>
+                item.product.id === product.id &&
+                (variant ? item.variant?.id === variant.id : !item.variant)
+            );
 
+            if (item && quantity > 0) {
+              item.quantity = quantity;
+            } else if (item && quantity === 0) {
+              state.cart = state.cart.filter(
+                (item) =>
+                  !(item.product.id === product.id &&
+                    (variant ? item.variant?.id === variant.id : !item.variant))
+              );
+            }
+          })
+        ),
         // Action: Control cart sidebar visibility
         setIsSheetOpen: (open) => {
           // Debug logs to track state changes
