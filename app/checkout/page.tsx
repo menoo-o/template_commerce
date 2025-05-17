@@ -3,11 +3,20 @@
 import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Info } from "lucide-react";
+import { useCartStore } from "@/stores/useCartStore";
+import Link from "next/link";
 
 export default function CheckoutPage() {
   const [placeType, setPlaceType] = useState("residential");
   const shipping = 10;
-  const subtotal = 30; // Example subtotal
+  
+  const { cart } = useCartStore();
+
+  // Calculate subtotal based on cart items
+  const subtotal = cart.reduce((sum, item) => {
+    const itemPrice = item.variant?.price ?? item.product.price;
+    return sum + itemPrice * item.quantity;
+  }, 0);
 
   return (
     <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 p-6">
@@ -102,44 +111,51 @@ export default function CheckoutPage() {
       </div>
 
       {/* RIGHT: Cart Summary */}
-      <div className="bg-gray-50 p-6 rounded-lg shadow-sm space-y-6">
-        <h2 className="text-xl font-semibold text-black">Your Order</h2>
+            <div className="bg-gray-50 p-6 rounded-lg shadow-sm space-y-6">
+      <h2 className="text-xl font-semibold text-black">Your Order</h2>
 
-        {/* Example Items */}
-        <div className="space-y-4 border-b pb-4">
-          <div className="flex justify-between text-sm text-gray-700">
-            <span>Chocolate Chip Cookies x2</span>
-            <span>$12.00</span>
+      <div className="space-y-4 border-b pb-4">
+        {cart.map((item, index) => (
+          <div
+            key={`${item.product.id}-${item.variant?.id ?? 'base'}-${index}`}
+            className="flex justify-between text-sm text-gray-700"
+          >
+            <span>
+              {item.product.name}
+              {item.variant?.size && ` (${item.variant.size})`} x{item.quantity}
+            </span>
+            <span>
+              $
+              {((item.variant?.price ?? item.product.price) * item.quantity).toFixed(2)}
+            </span>
           </div>
-          <div className="flex justify-between text-sm text-gray-700">
-            <span>Mini Cupcakes x3</span>
-            <span>$18.00</span>
-          </div>
-          <div className="text-right text-sm">
-            <button className="text-orange-500 hover:underline">Change</button>
-          </div>
+        ))}
+
+        <div className="text-right text-sm">
+          <Link href='/cart' className="text-orange-500 hover:underline">Change</Link>
         </div>
-
-        {/* Totals */}
-        <div className="space-y-2 text-sm text-gray-700">
-          <div className="flex justify-between">
-            <span>Subtotal</span>
-            <span>${subtotal.toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Shipping</span>
-            <span>${shipping.toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between font-semibold text-black">
-            <span>Total</span>
-            <span>${(subtotal + shipping).toFixed(2)}</span>
-          </div>
-        </div>
-
-        <button className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-md font-semibold">
-          Proceed to Payment
-        </button>
       </div>
+
+      {/* Totals */}
+      <div className="space-y-2 text-sm text-gray-700">
+        <div className="flex justify-between">
+          <span>Subtotal</span>
+          <span>${subtotal.toFixed(2)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span>Shipping</span>
+          <span>${shipping.toFixed(2)}</span>
+        </div>
+        <div className="flex justify-between font-semibold text-black">
+          <span>Total</span>
+          <span>${(subtotal + shipping).toFixed(2)}</span>
+        </div>
+      </div>
+
+      <button className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-md font-semibold">
+        Proceed to Payment
+      </button>
     </div>
+  </div>
   );
 }
