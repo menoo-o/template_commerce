@@ -42,18 +42,18 @@ export const useCartStore = create<CartStore>()(
 
         // Action: Remove product from cart
        removeFromCart: (product, variant) =>
-  set(
-    produce((state: CartStore) => {
-      state.cart = state.cart.filter((item) => {
-        // If a variant is specified, match both product and variant
-        if (variant) {
-          return !(item.product.id === product.id && item.variant?.id === variant.id);
-        }
-        // If no variant, ensure it's not the base product (no variant)
-        return !(item.product.id === product.id && !item.variant);
-      });
-    })
-  ),
+          set(
+            produce((state: CartStore) => {
+              state.cart = state.cart.filter((item) => {
+                // If a variant is specified, match both product and variant
+                if (variant) {
+                  return !(item.product.id === product.id && item.variant?.id === variant.id);
+                }
+                // If no variant, ensure it's not the base product (no variant)
+                return !(item.product.id === product.id && !item.variant);
+              });
+            })
+          ),
 
         // Action: Empty the cart completely
         clearCart: () =>

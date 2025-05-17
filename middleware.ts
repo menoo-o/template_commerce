@@ -8,6 +8,8 @@ export async function middleware(request: NextRequest) {
   // Initialize Supabase client
   const supabase = await createClient();
 
+
+
   // Get user
   const { data: { user }, error } = await supabase.auth.getUser();
   if (error || !user) {
