@@ -1,20 +1,74 @@
 'use client';
 
-import { useState } from "react";
-import { useCartStore } from "@/stores/useCartStore"; // Adjust this path if necessary
+import { useCartStore } from "@/stores/useCartStore";
 import Link from "next/link";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Info } from "lucide-react";
+import { useState, useEffect } from 'react';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+import type { Appearance } from '@stripe/stripe-js';
+import StripeCheckoutForm from "@/components/StripeCheckout/StripeCheckoutForm";
 
-export default function CheckoutForm() {
+// Load Stripe with publishable key
+if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
+  throw new Error('Public key not defined');
+}
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+
+export default function CheckoutPage() {
+  const [clientSecret, setClientSecret] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const [placeType, setPlaceType] = useState("residential");
   const shipping = 10;
   const { cart } = useCartStore();
+
+  useEffect(() => {
+    fetch('/api/create-payment-intent', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        amount: cart.reduce((sum, item) => {
+          const itemPrice = item.variant?.price ?? item.product.price;
+          return sum + itemPrice * item.quantity;
+        }, 0) + shipping
+      })
+    })
+      .then((res) => {
+        console.log('Fetch response status:', res.status);
+        return res.json();
+      })
+      .then((data) => {
+        console.log('Fetch response data:', data);
+        if (data.clientSecret) {
+          setClientSecret(data.clientSecret);
+        } else {
+          console.error('No client secret received:', data);
+          setError(data.error || 'Failed to load payment form');
+        }
+      })
+      .catch((err) => {
+        console.error('Fetch error:', err);
+        setError('Network error occurred');
+      });
+  }, [cart]);
 
   const subtotal = cart.reduce((sum, item) => {
     const itemPrice = item.variant?.price ?? item.product.price;
     return sum + itemPrice * item.quantity;
   }, 0);
+
+  const appearance: Appearance = {
+    theme: 'night',
+    labels: 'floating',
+    variables: {
+      colorPrimary: '#f97316',
+      colorBackground: '#ffffff',
+      colorText: '#1f2937',
+    }
+  };
 
   return (
     <form action="/checkout" method="POST" className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 p-6">
@@ -53,17 +107,17 @@ export default function CheckoutForm() {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="text-sm text-black font-medium">First Name</label>
-            <input type="text" name="firstName" className="w-full p-2 mt-1 border border-gray-300 rounded" />
+            <input type="text" name="firstName" className="w-full p-2 mt-1 border border-gray-300 rounded" required />
           </div>
           <div>
             <label className="text-sm text-black font-medium">Last Name</label>
-            <input type="text" name="lastName" className="w-full p-2 mt-1 border border-gray-300 rounded" />
+            <input type="text" name="lastName" className="w-full p-2 mt-1 border border-gray-300 rounded" required />
           </div>
         </div>
 
         <div>
           <label className="text-sm text-black font-medium">House Number & Street Address</label>
-          <input type="text" name="street" className="w-full p-2 mt-1 border border-gray-300 rounded" />
+          <input type="text" name="street" className="w-full p-2 mt-1 border border-gray-300 rounded" required />
         </div>
 
         <div>
@@ -74,11 +128,11 @@ export default function CheckoutForm() {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="text-sm text-black font-medium">City</label>
-            <input type="text" name="city" className="w-full p-2 mt-1 border border-gray-300 rounded" />
+            <input type="text" name="city" className="w-full p-2 mt-1 border border-gray-300 rounded" required />
           </div>
           <div>
             <label className="text-sm text-black font-medium">Postcode</label>
-            <input type="text" name="postcode" className="w-full p-2 mt-1 border border-gray-300 rounded" />
+            <input type="text" name="postcode" className="w-full p-2 mt-1 border border-gray-300 rounded" required />
           </div>
         </div>
 
@@ -94,7 +148,7 @@ export default function CheckoutForm() {
               </PopoverContent>
             </Popover>
           </label>
-          <input type="tel" name="phone" className="w-full p-2 mt-1 border border-gray-300 rounded" />
+          <input type="tel" name="phone" className="w-full p-2 mt-1 border border-gray-300 rounded" required />
         </div>
 
         <div className="flex items-center gap-2">
@@ -107,24 +161,16 @@ export default function CheckoutForm() {
         <h2 className="text-2xl font-bold text-orange-600 pt-4">Payment Information</h2>
 
         <div className="space-y-4">
-          <div>
-            <label className="text-sm font-medium text-black">Cardholder Name</label>
-            <input type="text" name="cardName" className="w-full p-2 mt-1 border border-gray-300 rounded" />
-          </div>
-          <div>
-            <label className="text-sm font-medium text-black">Card Number</label>
-            <input type="text" name="cardNumber" className="w-full p-2 mt-1 border border-gray-300 rounded" placeholder="4242 4242 4242 4242" />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium text-black">Expiry</label>
-              <input type="text" name="expiry" placeholder="MM/YY" className="w-full p-2 mt-1 border border-gray-300 rounded" />
+          {clientSecret ? (
+            <Elements stripe={stripePromise} options={{ clientSecret, appearance }}>
+              <StripeCheckoutForm clientSecret={clientSecret} />
+            </Elements>
+          ) : (
+            <div className="text-center">
+              <p>Loading payment form...</p>
+              {error && <p className="text-red-600">{error}</p>}
             </div>
-            <div>
-              <label className="text-sm font-medium text-black">CVC</label>
-              <input type="text" name="cvc" placeholder="123" className="w-full p-2 mt-1 border border-gray-300 rounded" />
-            </div>
-          </div>
+          )}
         </div>
       </div>
 
