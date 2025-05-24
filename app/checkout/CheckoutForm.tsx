@@ -24,6 +24,12 @@ export default function CheckoutPage() {
   const shipping = 10;
   const { cart } = useCartStore();
 
+  // Calculate amount and store in state
+  const amount = cart.reduce((sum, item) => {
+    const itemPrice = item.variant?.price ?? item.product.price;
+    return sum + itemPrice * item.quantity;
+  }, 0) + shipping; // Amount in pounds
+
  useEffect(() => {
   fetch('/api/create-payment-intent', {
     method: 'POST',
@@ -31,10 +37,7 @@ export default function CheckoutPage() {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      amount: cart.reduce((sum, item) => {
-        const itemPrice = item.variant?.price ?? item.product.price;
-        return sum + itemPrice * item.quantity;
-      }, 0) + shipping // Amount in pounds
+      amount
     }),
   })
     .then((res) => {
@@ -54,7 +57,7 @@ export default function CheckoutPage() {
       console.error('Fetch error:', err);
       setError('Network error occurred');
     });
-}, [cart, shipping]);
+}, [cart, amount]);
 
   const subtotal = cart.reduce((sum, item) => {
     const itemPrice = item.variant?.price ?? item.product.price;
@@ -224,7 +227,7 @@ return (
                   // can i place the amount calculated above here?  
                   
                         }}>
-              <StripeCheckoutForm clientSecret={clientSecret} />
+              <StripeCheckoutForm clientSecret={clientSecret} amount={amount} />
             </Elements>
           ) : (
             <div className="text-center">
