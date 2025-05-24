@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import type { Appearance } from '@stripe/stripe-js';
+
 import StripeCheckoutForm from "@/components/StripeCheckout/StripeCheckoutForm";
 
 // Load Stripe with publishable key
@@ -23,43 +24,44 @@ export default function CheckoutPage() {
   const shipping = 10;
   const { cart } = useCartStore();
 
-  useEffect(() => {
-    fetch('/api/create-payment-intent', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        amount: cart.reduce((sum, item) => {
-          const itemPrice = item.variant?.price ?? item.product.price;
-          return sum + itemPrice * item.quantity;
-        }, 0) + shipping
-      })
+ useEffect(() => {
+  fetch('/api/create-payment-intent', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      amount: cart.reduce((sum, item) => {
+        const itemPrice = item.variant?.price ?? item.product.price;
+        return sum + itemPrice * item.quantity;
+      }, 0) + shipping // Amount in pounds
+    }),
+  })
+    .then((res) => {
+      console.log('Fetch response status:', res.status);
+      return res.json();
     })
-      .then((res) => {
-        console.log('Fetch response status:', res.status);
-        return res.json();
-      })
-      .then((data) => {
-        console.log('Fetch response data:', data);
-        if (data.clientSecret) {
-          setClientSecret(data.clientSecret);
-        } else {
-          console.error('No client secret received:', data);
-          setError(data.error || 'Failed to load payment form');
-        }
-      })
-      .catch((err) => {
-        console.error('Fetch error:', err);
-        setError('Network error occurred');
-      });
-  }, [cart]);
+    .then((data) => {
+      console.log('Fetch response data:', data);
+      if (data.clientSecret) {
+        setClientSecret(data.clientSecret);
+      } else {
+        console.error('No client secret received:', data);
+        setError(data.error || 'Failed to load payment form');
+      }
+    })
+    .catch((err) => {
+      console.error('Fetch error:', err);
+      setError('Network error occurred');
+    });
+}, [cart, shipping]);
 
   const subtotal = cart.reduce((sum, item) => {
     const itemPrice = item.variant?.price ?? item.product.price;
     return sum + itemPrice * item.quantity;
   }, 0);
 
+  // stripe payment form appearance settings
   const appearance: Appearance = {
     theme: 'night',
     labels: 'floating',
@@ -208,13 +210,20 @@ return (
             Save Address
           </button>
         </form>
-        
+
 
         <h2 className="text-2xl font-bold text-orange-600 pt-4">Payment Information</h2>
 
         <div className="space-y-4">
           {clientSecret ? (
-            <Elements stripe={stripePromise} options={{ clientSecret, appearance }}>
+            <Elements
+                stripe={stripePromise} 
+                options={{ 
+                  clientSecret, 
+                  appearance,
+                  // can i place the amount calculated above here?  
+                  
+                        }}>
               <StripeCheckoutForm clientSecret={clientSecret} />
             </Elements>
           ) : (

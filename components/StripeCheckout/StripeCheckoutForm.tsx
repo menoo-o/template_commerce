@@ -60,6 +60,7 @@ function PaymentForm({ clientSecret }: CheckoutFormProps) {
       <div className="border p-3 rounded-md">
         <PaymentElement />
       </div>
+      
       <button
         type="submit"
         disabled={isLoading || !stripe || !elements}
