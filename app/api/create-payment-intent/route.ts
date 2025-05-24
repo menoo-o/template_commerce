@@ -23,7 +23,7 @@ export async function POST() {
 
     console.log('Payment Intent created:', paymentIntent.id);
     return NextResponse.json({ clientSecret: paymentIntent.client_secret });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Stripe Error:', {
       message: error.message,
       type: error.type,
