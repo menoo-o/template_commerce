@@ -16,7 +16,7 @@ export async function getAdminDashboardData() {
     .order('last_name', { ascending: true });
 
   if (clientsError) {
-    console.error('Failed to fetch clients:', clientsError.message);
+    // console.error('Failed to fetch clients:', clientsError.message);
     return [];
   }
 

@@ -1,4 +1,5 @@
-// [collectionSlug]/page.tsx — handles viewing all products within a collection (like all cakes).
+// [collectionSlug]/page.tsx — 
+// handles viewing all products within a collection (like all cakes).
 
 import Image from 'next/image';
 import Link from 'next/link';

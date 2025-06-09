@@ -16,10 +16,22 @@ module.exports = {
     ];
   },
 
+  // remotePatterns in your next.config.js file to allow images from specific external paths and block all others
+  // dokfkveanqiiqwlljlao.supabase.co
+
+  //Supabase S3 Connection: Storage endpoint: https://dokfkveanqiiqwlljlao.supabase.co/storage/v1/s3
+
   images: {
-    domains: ['dokfkveanqiiqwlljlao.supabase.co'], // Add your Supabase domain here
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'dokfkveanqiiqwlljlao.supabase.co',
+        pathname: '/storage/v1/object/sign/template-pics/**',
+      },
+    ],
   },
-
-
+  
 
 };
+
+

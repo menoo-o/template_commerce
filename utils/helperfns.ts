@@ -25,7 +25,7 @@ export async function signOut() {
   const { error } = await supabase.auth.signOut();
 
   if (error) {
-    console.error("Sign out failed:", error.message);
+    // console.error("Sign out failed:", error.message);
     return;
   }
 
