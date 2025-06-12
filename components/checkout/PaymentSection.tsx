@@ -2,15 +2,14 @@
 'use client';
 
 import { Elements } from '@stripe/react-stripe-js';
-import type { Appearance } from '@stripe/stripe-js';
 import StripeCheckoutForm from '@/components/StripeCheckout/StripeCheckoutForm';
-
+import { Stripe, StripeElementsOptions } from '@stripe/stripe-js';
 
 interface PaymentSectionProps {
   clientSecret: string | null;
   error: string | null;
-  stripePromise: any;
-  appearance: Appearance;
+  stripePromise: Promise<Stripe | null>;
+  appearance: StripeElementsOptions['appearance'];
   amount: number;
 }
 
