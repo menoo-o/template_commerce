@@ -22,14 +22,14 @@ export const OrderSummary = ({ shipping }: OrderSummaryProps) => {
       <div className="space-y-4 border-b pb-4">
         {cart.map((item, index) => (
           <div
-            key={`${item.product.id}-${item.variant?.id ?? "base"}-${index}`}
+            key={`£{item.product.id}-${item.variant?.id ?? "base"}-${index}`}
             className="flex justify-between text-sm text-gray-700"
           >
             <span>
               {item.product.name}
-              {item.variant?.size && ` (${item.variant.size})`} x{item.quantity}
+              {item.variant?.size && ` (£{item.variant.size})`} x{item.quantity}
             </span>
-            <span>${((item.variant?.price ?? item.product.price) * item.quantity).toFixed(2)}</span>
+            <span>£{((item.variant?.price ?? item.product.price) * item.quantity).toFixed(2)}</span>
           </div>
         ))}
 
@@ -43,15 +43,15 @@ export const OrderSummary = ({ shipping }: OrderSummaryProps) => {
       <div className="space-y-2 text-sm text-gray-700">
         <div className="flex justify-between">
           <span>Subtotal</span>
-          <span>${subtotal.toFixed(2)}</span>
+          <span>£{subtotal.toFixed(2)}</span>
         </div>
         <div className="flex justify-between">
           <span>Shipping</span>
-          <span>${shipping.toFixed(2)}</span>
+          <span>£{shipping.toFixed(2)}</span>
         </div>
         <div className="flex justify-between font-semibold text-black">
           <span>Total</span>
-          <span>${(subtotal + shipping).toFixed(2)}</span>
+          <span>£{(subtotal + shipping).toFixed(2)}</span>
         </div>
       </div>
     </div>

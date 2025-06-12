@@ -40,7 +40,8 @@ export default function CheckoutPage() {
         }
       })
       .catch((err) => {
-        setError('Network error occurred');
+        setError('Network error occurred')
+        console.error('Error fetching client secret:', err);
       });
   }, [cart, amount]);
 
