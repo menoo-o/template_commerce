@@ -17,7 +17,6 @@ export default function CheckoutPage() {
 
   const [clientSecret, setClientSecret] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [placeType, setPlaceType] = useState("residential");
   const shipping = 10;
   const { cart } = useCartStore();
 
@@ -86,7 +85,7 @@ export default function CheckoutPage() {
 
         <h2 className="text-2xl font-bold text-orange-600">Delivery Address</h2>
 
-        <DeliveryAddressForm placeType={placeType} setPlaceType={setPlaceType} />
+        <DeliveryAddressForm  />
 
         <h2 className="text-2xl font-bold text-orange-600 pt-4">Payment Information</h2>
 
