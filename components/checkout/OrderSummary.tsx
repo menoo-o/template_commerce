@@ -22,12 +22,12 @@ export const OrderSummary = ({ shipping }: OrderSummaryProps) => {
       <div className="space-y-4 border-b pb-4">
         {cart.map((item, index) => (
           <div
-            key={`£{item.product.id}-${item.variant?.id ?? "base"}-${index}`}
+            key={`${item.product.id}-${item.variant?.id ?? "base"}-${index}`}
             className="flex justify-between text-sm text-gray-700"
           >
             <span>
               {item.product.name}
-              {item.variant?.size && ` (£{item.variant.size})`} x{item.quantity}
+              {item.variant?.size && ` (${item.variant.size})`} x{item.quantity}
             </span>
             <span>£{((item.variant?.price ?? item.product.price) * item.quantity).toFixed(2)}</span>
           </div>

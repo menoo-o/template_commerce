@@ -13,9 +13,10 @@ interface DeliveryAddressFormProps {
 
 export const DeliveryAddressForm = ({ placeType, setPlaceType }: DeliveryAddressFormProps) => (
   <form action="/save-address" method="POST" className="space-y-6">
+
     <div className="space-y-2">
       <label className="font-medium text-black">What kind of place is this going to?</label>
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-3 mt-3">
         {["residential", "office", "restaurant", "other"].map((type) => (
           <button
             key={type}
@@ -102,6 +103,7 @@ export const DeliveryAddressForm = ({ placeType, setPlaceType }: DeliveryAddress
                     required
                   />
                 </div>
+                
                 <div>
                   <label className="text-sm text-black font-medium">Postcode</label>
                   <input
@@ -133,19 +135,9 @@ export const DeliveryAddressForm = ({ placeType, setPlaceType }: DeliveryAddress
                 />
               </div>
     
-              <div className="flex items-center gap-2">
-                <input type="checkbox" id="email-offers" name="emailOffers" />
-                <label htmlFor="email-offers" className="text-sm text-gray-700">
-                  Email me with news and offers
-                </label>
-              </div>
+             
     
 
-    <button
-      type="submit"
-      className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-md font-semibold"
-    >
-      Save Address
-    </button>
+    
   </form>
 );

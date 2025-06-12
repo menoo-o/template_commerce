@@ -24,6 +24,7 @@ export async function POST(request: NextRequest) {
       amount: Math.round(amount * 100),
       currency: 'gbp',
       payment_method_types: ['card'], // Restrict to card payments
+    
     });
 
     console.log('Payment Intent created:', paymentIntent.id);
