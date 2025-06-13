@@ -3,7 +3,8 @@
 
 import Link from "next/link";
 import { useCartStore } from "@/stores/useCartStore";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { fetchPaymentIntent } from './actions';
 
 import { loadStripe } from '@stripe/stripe-js';
 import type { Appearance } from '@stripe/stripe-js';
@@ -18,36 +19,33 @@ import EmailInfo from "@/components/checkout/EmailInfo";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
+
 export default function CheckoutPage() {
 
   const [clientSecret, setClientSecret] = useState('');
   const [error, setError] = useState<string | null>(null);
   const shipping = 10;
-  const { cart, getTotalPrice } = useCartStore();
+  const { getTotalPrice } = useCartStore();
 
   const amount = getTotalPrice() + shipping;
+  const amountRef = useRef(amount);
 
   useEffect(() => {
-    fetch('/api/create-payment-intent', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ amount }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.clientSecret) {
-          setClientSecret(data.clientSecret);
-        } else {
-          setError(data.error || 'Failed to load payment form');
-        }
-      })
-      .catch((err) => {
-        setError('Network error occurred')
-        console.error('Error fetching client secret:', err);
-      });
-  }, [cart, amount]);
+    amountRef.current = amount; // Update ref on every render
+  }, [amount]);
+
+  useEffect(() => {
+    async function loadPaymentIntent() {
+      try {
+        const { clientSecret } = await fetchPaymentIntent(amountRef.current);
+        setClientSecret(clientSecret);
+      } catch {
+        setError('Failed to load payment form');
+      }
+    }
+
+    loadPaymentIntent();
+  }, []); // Run once on mount
 
   const appearance: Appearance = {
     theme: 'night',
@@ -66,8 +64,6 @@ export default function CheckoutPage() {
     <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 p-6">
       {/* LEFT: Delivery Info */}
       {/* Breadcrumb on top of checkout page, ..? > cart > payment */}
-   
-
       <div className="space-y-6">
         
            <div className="flex items-center text-sm text-gray-400 space-x-2 mb-6">
