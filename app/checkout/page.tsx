@@ -1,15 +1,20 @@
 // app/checkout/page.tsx
 'use client';
 
+import Link from "next/link";
 import { useCartStore } from "@/stores/useCartStore";
 import { useState, useEffect } from 'react';
+
 import { loadStripe } from '@stripe/stripe-js';
+import type { Appearance } from '@stripe/stripe-js';
+
 import { DeliveryAddressForm } from "@/components/checkout/DeliveryAddressForm";
 import { OrderSummary } from "@/components/checkout/OrderSummary";
 import { PaymentSection } from "@/components/checkout/PaymentSection";
-import type { Appearance } from '@stripe/stripe-js';
-import Link from "next/link";
 import EmailInfo from "@/components/checkout/EmailInfo";
+
+
+
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -18,12 +23,9 @@ export default function CheckoutPage() {
   const [clientSecret, setClientSecret] = useState('');
   const [error, setError] = useState<string | null>(null);
   const shipping = 10;
-  const { cart } = useCartStore();
+  const { cart, getTotalPrice } = useCartStore();
 
-  const amount = cart.reduce((sum, item) => {
-    const itemPrice = item.variant?.price ?? item.product.price;
-    return sum + itemPrice * item.quantity;
-  }, 0) + shipping;
+  const amount = getTotalPrice() + shipping;
 
   useEffect(() => {
     fetch('/api/create-payment-intent', {

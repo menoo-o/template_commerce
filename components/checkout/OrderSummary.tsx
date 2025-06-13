@@ -9,13 +9,13 @@ interface OrderSummaryProps {
 }
 
 export const OrderSummary = ({ shipping }: OrderSummaryProps) => {
-  const { cart } = useCartStore();
+  const { cart, } = useCartStore();
   const subtotal = cart.reduce((sum, item) => {
     const itemPrice = item.variant?.price ?? item.product.price;
     return sum + itemPrice * item.quantity;
   }, 0);
 
-  return (
+ return (
     <div className="bg-gray-50 p-6 rounded-lg shadow-sm space-y-6">
       <h2 className="text-xl font-semibold text-black">Your Order</h2>
 
