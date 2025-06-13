@@ -2,19 +2,19 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { Suspense } from 'react'
 
-export default function SuccessPage() {
-  const searchParams = useSearchParams();
-  const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
+function SuccessContent() {
+  const searchParams = useSearchParams()
+  const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null)
 
   useEffect(() => {
-    // Get paymentIntentId from URL query parameter
-    const id = searchParams.get('paymentIntentId');
+    const id = searchParams.get('paymentIntentId')
     if (id) {
-      setPaymentIntentId(id);
-      console.log('Success Page Payment Intent ID:', id); // Log for debugging
+      setPaymentIntentId(id)
+      console.log('Success Page Payment Intent ID:', id)
     }
-  }, [searchParams]);
+  }, [searchParams])
 
   return (
     <div className="p-4">
@@ -25,5 +25,13 @@ export default function SuccessPage() {
         <p>Loading payment details...</p>
       )}
     </div>
-  );
+  )
+}
+
+export default function SuccessPage() {
+  return (
+    <Suspense fallback={<div className="p-4">Loading payment confirmation...</div>}>
+      <SuccessContent />
+    </Suspense>
+  )
 }
