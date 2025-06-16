@@ -1,3 +1,5 @@
+import { Stripe, StripeElementsOptions } from '@stripe/stripe-js';
+
 //Login Page export type LoginState = {
  
 export type LoginState = {
@@ -104,3 +106,32 @@ export interface SinglePageProps {
     productSlug: string;
   };
 }
+
+// Checkout page types
+
+//Contact_Email
+export type EmailFormValues = {
+  email: string
+  emailOffers: boolean
+}
+
+// Stripe
+
+export interface StripeFormProps {
+  clientSecret: string;
+  amount: number;
+  paymentIntentId?: string;
+}
+
+// Extended props for payment section
+export interface PaymentSectionProps extends StripeFormProps {
+  error: string | null;
+  stripePromise: Promise<Stripe | null>;
+  appearance: StripeElementsOptions['appearance'];
+}
+
+// Ref interface for exposed methods
+export interface StripeCheckoutFormRef {
+  handleStripePayment: () => Promise<{ success: boolean; paymentIntentId?: string }>;
+}
+

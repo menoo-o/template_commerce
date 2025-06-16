@@ -11,7 +11,7 @@ import type { Appearance } from '@stripe/stripe-js';
 
 import DeliveryAddressForm from "@/components/checkout/DeliveryAddressForm";
 import { OrderSummary } from "@/components/checkout/OrderSummary";
-import { PaymentSection, StripeCheckoutFormRef } from '@/components/StripeCheckout/StripeCheckoutForm';
+import { PaymentSection, StripeCheckoutForm } from '@/components/StripeCheckout/StripeCheckoutForm';
 
 // Email
 import { EmailFormValues } from "@/lib/types/types";
@@ -48,7 +48,7 @@ export default function CheckoutPage() {
 
 
   
-const stripeFormRef = useRef<StripeCheckoutFormRef>(null); // Ref for PaymentSection
+const stripeFormRef = useRef<StripeCheckoutForm>(null); // Ref for PaymentSection
   const [clientSecret, setClientSecret] = useState('');
   const [error, setError] = useState<string | null>(null);
   const shipping = 10;

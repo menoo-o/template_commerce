@@ -3,27 +3,10 @@
 
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
-import { Stripe, StripeElementsOptions } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
+import { StripeFormProps, PaymentSectionProps, StripeCheckoutFormRef } from '@/lib/types/types';
 
-// Type definitions for Stripe form props
-interface StripeFormProps {
-  clientSecret: string;
-  amount: number;
-  paymentIntentId?: string;
-}
 
-// Extended props for payment section
-interface PaymentSectionProps extends StripeFormProps {
-  error: string | null;
-  stripePromise: Promise<Stripe | null>;
-  appearance: StripeElementsOptions['appearance'];
-}
-
-// Ref interface for exposed methods
-export interface StripeCheckoutFormRef {
-  handleStripePayment: () => Promise<{ success: boolean; paymentIntentId?: string }>;
-}
 
 // StripeCheckoutForm Component
 const StripeCheckoutForm = forwardRef<StripeCheckoutFormRef, StripeFormProps>(
@@ -148,7 +131,7 @@ export const PaymentSection = forwardRef<StripeCheckoutFormRef, PaymentSectionPr
           </Elements>
         ) : (
           <div className="text-center">
-            <p>Loading payment form...</p>
+            {/* <p>Loading payment form...</p> */}
             {error && <p className="text-red-600">{error}</p>}
           </div>
         )}
