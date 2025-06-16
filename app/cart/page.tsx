@@ -6,7 +6,7 @@ import CartWrapper from '@/components/CartNotify/CartWrapper';
 
 //app/cart/page.tsx
 function Cartpage() {
-  const { clearCart, getTotalPrice } = useCartStore();
+  const { clearCart, getTotalPrice, cart } = useCartStore();
 
   return (
     <div className="p-6 max-w-4xl mx-auto min-h-screen">
@@ -22,12 +22,22 @@ function Cartpage() {
             </div>
 
             <div className="flex flex-col space-y-4">
+              {/* make it a btn link - disabled if cart.length ===0 /disabling the user to click it */}
               <Link
                 href="/checkout"
-                className="bg-orange-500 text-white text-center py-3 rounded-lg font-semibold hover:bg-orange-600 transition"
+                className={`text-center py-3 rounded-lg font-semibold transition ${
+                  cart.length === 0
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-orange-500 hover:bg-orange-600 text-white'
+                }`}
+                aria-disabled={cart.length === 0}
+                tabIndex={cart.length === 0 ? -1 : 0}
+                onClick={(e) => cart.length === 0 && e.preventDefault()}
               >
-                Proceed to Checkout
-              </Link>
+                {cart.length > 0
+                  ? `Proceed to Checkout`
+                  : 'Your cart is empty'}
+         </Link>
 
               <button
                 onClick={clearCart}
