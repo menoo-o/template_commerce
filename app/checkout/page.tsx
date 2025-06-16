@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCartStore } from "@/stores/useCartStore";
 import { useState, useEffect, useRef } from 'react';
 import { fetchPaymentIntent } from './actions';
+import EmptyCart  from '@/components/checkout/EmptyCart';
 
 import { loadStripe } from '@stripe/stripe-js';
 import type { Appearance } from '@stripe/stripe-js';
@@ -15,7 +16,7 @@ import { PaymentSection } from '@/components/StripeCheckout/StripeCheckoutForm';
 
 import {StripeCheckoutFormRef} from '@/lib/types/types';
 
-// Email
+// Email + Address
 import { CombinedFormValues  } from "@/lib/types/types";
 // import { useForm, SubmitHandler } from 'react-hook-form'
 import EmailInfo from "@/components/checkout/EmailInfo";
@@ -46,13 +47,6 @@ const methods = useForm<CombinedFormValues>({
   }
 });
 
-  
-//   const onSubmit: SubmitHandler<CombinedFormValues> = (data) => {
-//   console.log('Full Form data:', data);
-//   Here you have both email + delivery address data together
-//   API call would go here
-// };
-
   const onSubmit = (data: CombinedFormValues) => {
     console.log('Submitted:', data);
   };
@@ -65,7 +59,8 @@ const stripeFormRef = useRef<StripeCheckoutFormRef>(null); // Ref for PaymentSec
   const [clientSecret, setClientSecret] = useState('');
   const [error, setError] = useState<string | null>(null);
   const shipping = 10;
-  const { getTotalPrice } = useCartStore();
+  const { getTotalPrice, cart } = useCartStore();
+
 
   const amount = getTotalPrice() + shipping;
   const amountRef = useRef(amount);
@@ -75,6 +70,8 @@ const stripeFormRef = useRef<StripeCheckoutFormRef>(null); // Ref for PaymentSec
   }, [amount]);
 
   useEffect(() => {
+    console.log(cart.length)
+     if (cart.length === 0) return;
     async function loadPaymentIntent() {
       try {
         const { clientSecret } = await fetchPaymentIntent(amountRef.current);
@@ -85,7 +82,7 @@ const stripeFormRef = useRef<StripeCheckoutFormRef>(null); // Ref for PaymentSec
     }
 
     loadPaymentIntent();
-  }, []); // Run once on mount
+  }, [cart.length]); // Run once on mount
 
   // // Example: Trigger payment programmatically
   const handleProgrammaticPayment = async () => {
@@ -109,6 +106,11 @@ const stripeFormRef = useRef<StripeCheckoutFormRef>(null); // Ref for PaymentSec
     },
     
 }
+
+ // Render EmptyCart if cart is empty
+  if (cart.length === 0) {
+    return <EmptyCart />;
+  }
     
   return (
     <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 p-6">
