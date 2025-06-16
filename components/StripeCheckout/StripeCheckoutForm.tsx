@@ -5,6 +5,7 @@ import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import { StripeFormProps, PaymentSectionProps, StripeCheckoutFormRef } from '@/lib/types/types';
+import { useCartStore } from '@/stores/useCartStore';
 
 
 
@@ -18,6 +19,10 @@ const StripeCheckoutForm = forwardRef<StripeCheckoutFormRef, StripeFormProps>(
 
     // Format amount for display
     const formattedAmount = `£${amount.toFixed(2)}`;
+
+    // Cart reset if payment succeeds
+    const {clearCart} = useCartStore();
+
 
     // Handle payment submission
     const handleStripePayment = async (): Promise<
@@ -58,6 +63,7 @@ const StripeCheckoutForm = forwardRef<StripeCheckoutFormRef, StripeFormProps>(
       }
 
       if (paymentIntent?.status === 'succeeded') {
+        clearCart();
         setMessage('Payment successful!');
         window.location.href = `/success?paymentIntentId=${paymentIntent.id}`;
         return { success: true, paymentIntentId: paymentIntent.id };
