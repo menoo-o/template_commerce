@@ -16,15 +16,14 @@ import { PaymentSection } from '@/components/StripeCheckout/StripeCheckoutForm';
 import {StripeCheckoutFormRef} from '@/lib/types/types';
 
 // Email
-import { EmailFormValues, DeliveryAddressFormValues, CombinedFormValues  } from "@/lib/types/types";
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { CombinedFormValues  } from "@/lib/types/types";
+// import { useForm, SubmitHandler } from 'react-hook-form'
 import EmailInfo from "@/components/checkout/EmailInfo";
-import { UseFormRegister, FieldErrors } from 'react-hook-form';
 
 
 import DeliveryAddressForm from "@/components/checkout/DeliveryAddressForm";
 
-
+import { useForm, FormProvider } from 'react-hook-form';
 
 
 
@@ -33,7 +32,7 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 
 
 export default function CheckoutPage() {
-const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<CombinedFormValues>({
+const methods = useForm<CombinedFormValues>({
   defaultValues: {
     email: '',
     emailOffers: false,
@@ -48,11 +47,15 @@ const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<
 });
 
   
-  const onSubmit: SubmitHandler<CombinedFormValues> = (data) => {
-  console.log('Full Form data:', data);
-  // Here you have both email + delivery address data together
-  // API call would go here
-};
+//   const onSubmit: SubmitHandler<CombinedFormValues> = (data) => {
+//   console.log('Full Form data:', data);
+//   Here you have both email + delivery address data together
+//   API call would go here
+// };
+
+  const onSubmit = (data: CombinedFormValues) => {
+    console.log('Submitted:', data);
+  };
 
 
 
@@ -127,19 +130,20 @@ const stripeFormRef = useRef<StripeCheckoutFormRef>(null); // Ref for PaymentSec
 
           {/* Contact(email) Info  */}
           {/* Combined Forms */}
-          <form onSubmit={handleSubmit(onSubmit)} className="max-w-md">
-        <EmailInfo 
-         register={register as unknown as UseFormRegister<EmailFormValues>} 
-         errors={errors as FieldErrors<EmailFormValues>} 
-          />
+          <FormProvider {...methods}>
+              <form onSubmit={methods.handleSubmit(onSubmit)} className="max-w-md">
+                <EmailInfo />
+                <DeliveryAddressForm />
 
-        <DeliveryAddressForm 
-          register={register as unknown as UseFormRegister<DeliveryAddressFormValues>} 
-           errors={errors as FieldErrors<DeliveryAddressFormValues>} 
-        />
+                <button 
+                  type="submit" 
+                  className="bg-orange-500 text-white px-4 py-2 rounded"
+                 >
+                   Submit
+               </button>
+              </form>
 
-        <button type="submit" disabled={isSubmitting}>Submit</button>
-          </form>
+          </FormProvider>
 {/* 
         <h2 className="text-2xl font-bold text-orange-600">Delivery Address</h2>
             */}
