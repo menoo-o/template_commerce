@@ -44,7 +44,9 @@ const StripeCheckoutForm = forwardRef<StripeCheckoutFormRef, StripeFormProps>(
         elements,
         clientSecret,
         confirmParams: {
-          return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success`,
+          return_url: process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3000/success'
+      : 'https://template-setup.vercel.app/success'
         },
         redirect: 'if_required',
       });
@@ -71,46 +73,34 @@ const StripeCheckoutForm = forwardRef<StripeCheckoutFormRef, StripeFormProps>(
     }));
 
     // Handle form submission
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      const result = await handleStripePayment();
-      if (!result.success) {
-        // Message is already set in handleStripePayment
-      }
-    };
+    // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    //   e.preventDefault();
+    //   const result = await handleStripePayment();
+    //   if (!result.success) {
+    //     // Message is already set in handleStripePayment
+    //   }
+    // };
 
     return (
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <>
         <div className="border p-3 rounded-md">
           <PaymentElement />
         </div>
         <button
           type="submit"
           disabled={isLoading || !stripe || !elements}
-          className="w-full bg-orange-400 text-white py-2 rounded-md hover:bg-orange-550 disabled:bg-gray-400 flex justify-center items-center"
-        >
+          className="w-full bg-orange-400 text-white py-2 rounded-md hover:bg-orange-550 disabled:bg-gray-400 flex justify-center items-center" >
           {isLoading ? (
             <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8v8h8a8 8 0 01-16 0z"
-              />
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8h8a8 8 0 01-16 0z" />
             </svg>
           ) : (
             `Pay ${formattedAmount}`
           )}
         </button>
         {message && <div className="text-orange-600 text-center">{message}</div>}
-      </form>
+      </>
     );
   }
 );

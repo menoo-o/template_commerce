@@ -115,6 +115,21 @@ export type EmailFormValues = {
   emailOffers: boolean
 }
 
+export type DeliveryAddressFormValues = {
+  fName: string;  
+  lName: string;
+  addressLine1: string; 
+  addressLine2?: string; // Optional field
+  city: string;
+  postcode: string;
+  phone: string;
+}
+
+export type CombinedFormValues = EmailFormValues & DeliveryAddressFormValues;
+// export type confirmOrder = {
+
+// }
+
 // Stripe
 
 export interface StripeFormProps {

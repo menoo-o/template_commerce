@@ -16,9 +16,15 @@ import { PaymentSection } from '@/components/StripeCheckout/StripeCheckoutForm';
 import {StripeCheckoutFormRef} from '@/lib/types/types';
 
 // Email
-import { EmailFormValues } from "@/lib/types/types";
+import { EmailFormValues, DeliveryAddressFormValues, CombinedFormValues  } from "@/lib/types/types";
 import { useForm, SubmitHandler } from 'react-hook-form'
 import EmailInfo from "@/components/checkout/EmailInfo";
+import { UseFormRegister, FieldErrors } from 'react-hook-form';
+
+
+import DeliveryAddressForm from "@/components/checkout/DeliveryAddressForm";
+
+
 
 
 
@@ -27,29 +33,27 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 
 
 export default function CheckoutPage() {
-  const { register, handleSubmit, formState: { errors, isSubmitting },} = useForm<EmailFormValues>({
-    defaultValues: {
-      email: '',
-      emailOffers: false,
-    },
-  })
-
-  const onSubmit: SubmitHandler<EmailFormValues> = (data) => {
-    console.log('Form data:', data)
-    // API call would go here
+const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<CombinedFormValues>({
+  defaultValues: {
+    email: '',
+    emailOffers: false,
+    fName: '',
+    lName: '',
+    addressLine1: '',
+    addressLine2: '',
+    city: '',
+    postcode: '',
+    phone: ''
   }
+});
 
-
-  // State for delivery address fields
   
-  // (These will be passed down to DeliveryAddressForm component)
-  // const [fName, setFName] = useState('');
-  // const [lName, setLName] = useState('');
-  // const [addressLine1, setAddressLine1] = useState('');
-  // const [addressLine2, setAddressLine2] = useState('');
-  // const [city, setCity] = useState('');
-  // const [postcode, setPostcode] = useState('');
-  // const [phone, setPhone] = useState('');
+  const onSubmit: SubmitHandler<CombinedFormValues> = (data) => {
+  console.log('Full Form data:', data);
+  // Here you have both email + delivery address data together
+  // API call would go here
+};
+
 
 
 
@@ -122,36 +126,24 @@ const stripeFormRef = useRef<StripeCheckoutFormRef>(null); // Ref for PaymentSec
           </div>
 
           {/* Contact(email) Info  */}
+          {/* Combined Forms */}
           <form onSubmit={handleSubmit(onSubmit)} className="max-w-md">
-            <EmailInfo register={register} errors={errors} />
-              <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-blue-600 text-white py-2 rounded disabled:opacity-50"
-              >
-             {isSubmitting ? 'Submitting...' : 'Place Order'}
-             </button>
+        <EmailInfo 
+         register={register as unknown as UseFormRegister<EmailFormValues>} 
+         errors={errors as FieldErrors<EmailFormValues>} 
+          />
+
+        <DeliveryAddressForm 
+          register={register as unknown as UseFormRegister<DeliveryAddressFormValues>} 
+           errors={errors as FieldErrors<DeliveryAddressFormValues>} 
+        />
+
+        <button type="submit" disabled={isSubmitting}>Submit</button>
           </form>
-
+{/* 
         <h2 className="text-2xl font-bold text-orange-600">Delivery Address</h2>
+            */}
 
-        {/* <DeliveryAddressForm
-          fName={fName}
-          setFName={setFName}
-          lName={lName}
-          setLName={setLName}
-          addressLine1={addressLine1}
-          setAddressLine1={setAddressLine1}
-          addressLine2={addressLine2}
-          setAddressLine2={setAddressLine2}
-          city={city}
-          setCity={setCity}
-          postcode={postcode}
-          setPostcode={setPostcode}
-          phone={phone}
-          setPhone={setPhone}  
-          onSubmit={handleSubmit} // Pass submit handler
-        /> */}
 
         <h2 className="text-2xl font-bold text-orange-600 pt-4">Payment Information</h2>
 
@@ -163,6 +155,7 @@ const stripeFormRef = useRef<StripeCheckoutFormRef>(null); // Ref for PaymentSec
           appearance={appearance}
           amount={amount}
         />
+
         {/* Example button to test ref */}
         <button
           onClick={handleProgrammaticPayment}
