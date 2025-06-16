@@ -20,10 +20,12 @@ const StripeCheckoutForm = forwardRef<StripeCheckoutFormRef, StripeFormProps>(
     const formattedAmount = `£${amount.toFixed(2)}`;
 
     // Handle payment submission
-    const handleStripePayment = async (): Promise<{
+    const handleStripePayment = async (): Promise<
+    {
       success: boolean;
       paymentIntentId?: string;
-    }> => {
+    }
+    > => {
       if (!stripe || !elements) {
         setMessage('Payment form not loaded.');
         return { success: false };
