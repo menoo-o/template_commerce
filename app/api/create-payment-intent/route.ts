@@ -11,6 +11,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const { amount } = await request.json();
+
     // Validate amount
     if (!amount || typeof amount !== 'number' || amount <= 0) {
       console.error('Invalid amount:', amount);
@@ -27,7 +28,8 @@ export async function POST(request: NextRequest) {
     
     });
 
-    console.log('Payment Intent created:', paymentIntent.id);
+    // Could have more checks on the paymentIntent object here
+
     return NextResponse.json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
     console.error('Stripe Error:', error);
@@ -35,5 +37,3 @@ export async function POST(request: NextRequest) {
   }
 }
 
-
-// let appearance: Appearance = {

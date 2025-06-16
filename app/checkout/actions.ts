@@ -1,4 +1,3 @@
-
 'use server'
 
 // Placeholder for future Stripe server-side logic
@@ -9,7 +8,7 @@ export async function handleCheckout(formData: FormData) {
   return { success: true };
 }
 
-// utils/error-handling.ts
+//error-handling.ts
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error) return error.message;
   if (typeof error === 'string') return error;
