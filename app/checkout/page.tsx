@@ -39,7 +39,7 @@ export default function CheckoutPage() {
   const [clientSecret, setClientSecret] = useState('');
   const [error, setError] = useState<string | null>(null);
   const shipping = 10;
-  const { getTotalPrice, cart, clearCart } = useCartStore();
+  const { getTotalPrice, cart } = useCartStore();
   const amount = getTotalPrice() + shipping;
   const amountRef = useRef(amount);
 
@@ -72,9 +72,8 @@ export default function CheckoutPage() {
       if (result.success && result.paymentIntentId) {
         console.log('Form data:', data);
         console.log('PaymentIntent ID:', result.paymentIntentId);
-        
         router.push(`/success?paymentIntentId=${result.paymentIntentId}`);
-        clearCart();
+        
       } else {
         setFormError('Payment failed. Please check your payment details.');
       }
