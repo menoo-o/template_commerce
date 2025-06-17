@@ -38,7 +38,7 @@ export const getCollectionPageData = unstable_cache(
   },
   ['getCollectionPageData'],
   {
-    revalidate: 300, // Cache for 5 minutes
+    revalidate: 3000, // Cache for 50 minutes
     tags: ['supabase', 'collections'], // Global tags for revalidation
   }
 );

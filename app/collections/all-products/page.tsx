@@ -25,6 +25,7 @@ export default async function AllCollectionsPage() {
             alt="All Collections"
             fill
             className="object-cover rounded"
+            priority
           />
         </div>
       </div>
