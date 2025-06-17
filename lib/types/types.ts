@@ -134,7 +134,7 @@ export type CombinedFormValues = EmailFormValues & DeliveryAddressFormValues;
 
 export interface StripeFormProps {
   clientSecret: string;
-  amount: number;
+  amount?: number;
   paymentIntentId?: string;
 }
 

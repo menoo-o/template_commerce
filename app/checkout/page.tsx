@@ -1,77 +1,54 @@
-// app/checkout/page.tsx
 'use client';
 
-import Link from "next/link";
-import { useCartStore } from "@/stores/useCartStore";
 import { useState, useEffect, useRef } from 'react';
-import { fetchPaymentIntent } from './actions';
-import EmptyCart  from '@/components/checkout/EmptyCart';
-
+import { useRouter } from 'next/navigation';
+import { useForm, FormProvider } from 'react-hook-form';
+import Link from 'next/link';
 import { loadStripe } from '@stripe/stripe-js';
 import type { Appearance } from '@stripe/stripe-js';
-
-// import DeliveryAddressForm from "@/components/checkout/DeliveryAddressForm";
-import { OrderSummary } from "@/components/checkout/OrderSummary";
+import { useCartStore } from '@/stores/useCartStore';
+import { fetchPaymentIntent } from './actions';
+import { CombinedFormValues, StripeCheckoutFormRef } from '@/lib/types/types';
+import EmptyCart from '@/components/checkout/EmptyCart';
+import EmailInfo from '@/components/checkout/EmailInfo';
+import DeliveryAddressForm from '@/components/checkout/DeliveryAddressForm';
 import { PaymentSection } from '@/components/StripeCheckout/StripeCheckoutForm';
-
-import {StripeCheckoutFormRef} from '@/lib/types/types';
-
-// Email + Address
-import { CombinedFormValues  } from "@/lib/types/types";
-// import { useForm, SubmitHandler } from 'react-hook-form'
-import EmailInfo from "@/components/checkout/EmailInfo";
-
-
-import DeliveryAddressForm from "@/components/checkout/DeliveryAddressForm";
-
-import { useForm, FormProvider } from 'react-hook-form';
-
-
-
+import { OrderSummary } from '@/components/checkout/OrderSummary';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
-
 export default function CheckoutPage() {
-const methods = useForm<CombinedFormValues>({
-  defaultValues: {
-    email: '',
-    emailOffers: false,
-    fName: '',
-    lName: '',
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    postcode: '',
-    phone: ''
-  }
-});
-
-  const onSubmit = (data: CombinedFormValues) => {
-    console.log('Submitted:', data);
-  };
-
-
-
-
-  
-const stripeFormRef = useRef<StripeCheckoutFormRef>(null); // Ref for PaymentSection
+  const router = useRouter();
+  const methods = useForm<CombinedFormValues>({
+    defaultValues: {
+      email: '',
+      emailOffers: false,
+      fName: '',
+      lName: '',
+      addressLine1: '',
+      addressLine2: '',
+      city: '',
+      postcode: '',
+      phone: '',
+    },
+  });
+  const { formState } = methods;
+  const [isLoading, setIsLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const stripeFormRef = useRef<StripeCheckoutFormRef>(null);
   const [clientSecret, setClientSecret] = useState('');
   const [error, setError] = useState<string | null>(null);
   const shipping = 10;
-  const { getTotalPrice, cart } = useCartStore();
-
-
+  const { getTotalPrice, cart, clearCart } = useCartStore();
   const amount = getTotalPrice() + shipping;
   const amountRef = useRef(amount);
 
   useEffect(() => {
-    amountRef.current = amount; // Update ref on every render
+    amountRef.current = amount;
   }, [amount]);
 
   useEffect(() => {
-    console.log(cart.length)
-     if (cart.length === 0) return;
+    if (cart.length === 0) return;
     async function loadPaymentIntent() {
       try {
         const { clientSecret } = await fetchPaymentIntent(amountRef.current);
@@ -80,19 +57,31 @@ const stripeFormRef = useRef<StripeCheckoutFormRef>(null); // Ref for PaymentSec
         setError('Failed to load payment form');
       }
     }
-
     loadPaymentIntent();
-  }, [cart.length]); // Run once on mount
+  }, [cart.length]);
 
-  // // Example: Trigger payment programmatically
-  const handleProgrammaticPayment = async () => {
-    if (stripeFormRef.current) {
+  const handleProgrammaticPayment = async (data: CombinedFormValues) => {
+    if (!stripeFormRef.current || !formState.isValid || amount <= 0) {
+      if (amount <= 0) setFormError('Cart total must be greater than £0.');
+      return;
+    }
+    setIsLoading(true);
+    setFormError(null);
+    try {
       const result = await stripeFormRef.current.handleStripePayment();
-      if (result.success) {
-        console.log('Payment succeeded:', result.paymentIntentId);
+      if (result.success && result.paymentIntentId) {
+        console.log('Form data:', data);
+        console.log('PaymentIntent ID:', result.paymentIntentId);
+        
+        router.push(`/success?paymentIntentId=${result.paymentIntentId}`);
+        clearCart();
       } else {
-        console.log('Payment failed');
+        setFormError('Payment failed. Please check your payment details.');
       }
+    } catch {
+      setFormError('An error occurred during payment.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -104,76 +93,81 @@ const stripeFormRef = useRef<StripeCheckoutFormRef>(null); // Ref for PaymentSec
       colorBackground: '#ffffff',
       colorText: '#1f2937',
     },
-    
-}
+  };
 
- // Render EmptyCart if cart is empty
   if (cart.length === 0) {
     return <EmptyCart />;
   }
-    
+
   return (
     <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 p-6">
       {/* LEFT: Delivery Info */}
-      {/* Breadcrumb on top of checkout page, ..? > cart > payment */}
       <div className="space-y-6">
-        
-           <div className="flex items-center text-sm text-gray-400 space-x-2 mb-6">
-            <Link 
-              href="/" 
-              className="hover:underline text-black font-medium">
-                Home    
-            </Link>
-            <span>{'>'}</span>
-            <Link href="/cart" className="hover:underline text-black font-medium">Your Cart</Link>
-            <span>{'>'}</span>
-            <span className="text-orange-500 font-semibold">Payment</span>
-          </div>
+        <div className="flex items-center text-sm text-gray-400 space-x-2 mb-6">
+          <Link href="/" className="hover:underline text-black font-medium">
+            Home
+          </Link>
+          <span>{'>'}</span>
+          <Link href="/cart" className="hover:underline text-black font-medium">
+            Your Cart
+          </Link>
+          <span>{'>'}</span>
+          <span className="text-orange-500 font-semibold">Payment</span>
+        </div>
 
-          {/* Contact(email) Info  */}
-          {/* Combined Forms */}
-          <FormProvider {...methods}>
-              <form onSubmit={methods.handleSubmit(onSubmit)} className="max-w-md">
-                <EmailInfo />
-                <DeliveryAddressForm />
-
-                <button 
-                  type="submit" 
-                  className="bg-orange-500 text-white px-4 py-2 rounded"
-                 >
-                   Submit
-               </button>
-              </form>
-
-          </FormProvider>
-{/* 
-        <h2 className="text-2xl font-bold text-orange-600">Delivery Address</h2>
-            */}
-
-
-        <h2 className="text-2xl font-bold text-orange-600 pt-4">Payment Information</h2>
-
-        <PaymentSection
-          ref={stripeFormRef}
-          clientSecret={clientSecret}
-          error={error}
-          stripePromise={stripePromise}
-          appearance={appearance}
-          amount={amount}
-        />
-
-        {/* Example button to test ref */}
-        <button
-          onClick={handleProgrammaticPayment}
-          className="mt-4 px-4 py-2 bg-green-500 text-white rounded"
-        >
-          Pay Programmatically
-        </button>
+        <FormProvider {...methods}>
+          <form onSubmit={methods.handleSubmit(handleProgrammaticPayment)} className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold text-orange-600 mb-4">Contact Information</h2>
+              <EmailInfo />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-orange-600 mb-4">Delivery Address</h2>
+              <DeliveryAddressForm />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-orange-600 mb-4">Payment Information</h2>
+              <PaymentSection
+                ref={stripeFormRef}
+                clientSecret={clientSecret}
+                error={error}
+                stripePromise={stripePromise}
+                appearance={appearance}
+                amount={amount}
+              />
+            </div>
+            {formError && <div className="text-red-600 text-center">{formError}</div>}
+            <button
+              type="submit"
+              disabled={isLoading || !formState.isValid || amount <= 0}
+              className="w-full mt-4 px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 disabled:bg-gray-400 flex justify-center items-center"
+            >
+              {isLoading ? (
+                <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8h8a8 8 0 01-16 0z"
+                  />
+                </svg>
+              ) : (
+                `Pay £${amount.toFixed(2)}`
+              )}
+            </button>
+          </form>
+        </FormProvider>
       </div>
 
       {/* RIGHT: Order Summary */}
       <OrderSummary shipping={shipping} />
-
     </div>
   );
 }

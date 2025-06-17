@@ -38,7 +38,7 @@ function Cartpage() {
                   ? `Proceed to Checkout`
                   : 'Your cart is empty'}
          </Link>
-
+               
               <button
                 onClick={clearCart}
                 className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-neutral-800 transition"
