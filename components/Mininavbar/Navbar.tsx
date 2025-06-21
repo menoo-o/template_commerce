@@ -11,6 +11,7 @@ function Navbar() {
         <Link href="/collections/all-products" className="hover:underline">Shop</Link>
         <Link href="/account/login" className="hover:underline">Login</Link>
         <Link href="/cart" className="hover:underline">🛒 Cart</Link>
+        <Link href="/about" className="hover:underline">About</Link>
       </div>
     </nav>
     </div>
