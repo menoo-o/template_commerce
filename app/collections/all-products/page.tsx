@@ -1,10 +1,21 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { getCollectionsInfo } from './loader';
+// import { getCollectionsInfo } from './loader';
 import { CollectionCard } from '@/lib/types/types';
 
 export default async function AllCollectionsPage() {
-  const collections = await getCollectionsInfo();
+  // Fetch collections data
+  const respose = await fetch ("http://localhost:3000/api/collections", {
+    //want to cache this data for 60 seconds
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    next: { revalidate: 600 }, // Revalidate every 600 seconds
+    })
+
+    const collections: CollectionCard[] | null = await respose.json();
+  // const collections = await getCollectionsInfo();
 
   return (
     <main className="max-w-6xl mx-auto px-4 py-10">
