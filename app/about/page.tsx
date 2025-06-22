@@ -5,16 +5,11 @@ import { CollectionCard } from '@/lib/types/types';
 
 export default async function AllCollectionsPage() {
   // Fetch collections data
-  const respose = await fetch ("https://template-setup.vercel.app/api/collections", {
-    //want to cache this data for 60 seconds
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    next: { revalidate: 600 }, // Revalidate every 600 seconds
-    })
+const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/collections`, {
+  next: { revalidate: 600 },
+})
 
-    const collections: CollectionCard[] | null = await respose.json();
+    const collections: CollectionCard[] | null = await response.json();
   // const collections = await getCollectionsInfo();
 
   return (
