@@ -5,7 +5,7 @@ import { CollectionCard } from '@/lib/types/types';
 
 export default async function AllCollectionsPage() {
   // Fetch collections data
-  const respose = await fetch ("http://localhost:3000/api/collections", {
+  const respose = await fetch ("https://template-setup.vercel.app/api/collections", {
     //want to cache this data for 60 seconds
     method: 'GET',
     headers: {
