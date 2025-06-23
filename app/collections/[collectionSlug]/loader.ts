@@ -5,7 +5,8 @@ import { createClient } from '@/utils/supabase/server';
 import { CollectionHero } from '@/lib/types/types';
 import { ProductCard } from '@/lib/types/types';
 
-
+//collections
+      //-[collectionSlug]/loader.ts
 export async function getCollectionPageData(slug: string): Promise<{ collection: CollectionHero | null, products: ProductCard[] }>{
   const supabase = await createClient();
 

@@ -7,11 +7,7 @@ import { getCollectionPageData } from './loader';
 import { notFound } from 'next/navigation';
 import { ProductCardProps } from '@/lib/types/types';
 
-export default async function AllCollectionsPage({
-  params,
-}: {
-  params: Promise<{ collectionSlug: string }>;
-}) {
+export default async function AllCollectionsPage({ params, }: { params: Promise<{ collectionSlug: string } >; }) {
   const { collectionSlug } = await params;
   const { collection, products } = await getCollectionPageData(collectionSlug);
 
@@ -80,3 +76,10 @@ function ProductCardItem({ name, image_url, slug, collectionSlug, price }: Produ
     </Link>
   );
 }
+
+
+// [collectionSlug]/page.tsx — 
+// handles viewing all products within a collection (like all cakes).
+
+// app/collections/[collectionSlug]/page.tsx
+
