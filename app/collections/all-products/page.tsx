@@ -7,7 +7,7 @@ import { CollectionCard } from '@/lib/types/types';
 
 export default async function AllCollectionsPage() {
   // Fetch collections data
- const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/collections`, {
+ const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/getcollections`, {
   cache: 'force-cache', // Disable caching for fresh data
 })
 
