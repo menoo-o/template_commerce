@@ -1,6 +1,9 @@
 // [collectionSlug]/page.tsx — 
 // handles viewing all products within a collection (like all cakes).
 
+export const revalidate = 0; // Revalidate every 60 seconds
+
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { getCollectionPageData } from './loader';
@@ -78,8 +81,4 @@ function ProductCardItem({ name, image_url, slug, collectionSlug, price }: Produ
 }
 
 
-// [collectionSlug]/page.tsx — 
-// handles viewing all products within a collection (like all cakes).
-
-// app/collections/[collectionSlug]/page.tsx
 

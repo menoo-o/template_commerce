@@ -1,3 +1,6 @@
+//This page shows all collections with their images and names
+// It fetches the collections data from the API and displays it in a grid format
+
 export const revalidate = 0; // Revalidate every 60 seconds
 
 import Image from 'next/image';
@@ -11,7 +14,7 @@ export default async function AllCollectionsPage() {
   cache: 'force-cache', // Disable caching for fresh data
 })
 
-  const collections: CollectionCard[] | null = await response.json();
+const collections: CollectionCard[] | null = await response.json();
   
 
   return (
