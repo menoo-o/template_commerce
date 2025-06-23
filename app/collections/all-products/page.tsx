@@ -1,22 +1,18 @@
+export const revalidate = 0; // Revalidate every 60 seconds
+
 import Image from 'next/image';
  import Link from 'next/link';
-import { getCollectionsInfo } from './loader';
+
 import { CollectionCard } from '@/lib/types/types';
 
 export default async function AllCollectionsPage() {
-  // // Fetch collections data
-  // const respose = await fetch ("http://localhost:3000/api/collections", {
-  //   //want to cache this data for 60 seconds
-  //   method: 'GET',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
-  //   next: { revalidate: 600 }, 
-  //   // Revalidate every 600 seconds
-  //   })
+  // Fetch collections data
+ const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/collections`, {
+  cache: 'force-cache', // Disable caching for fresh data
+})
 
-    // const collections: CollectionCard[] | null = await respose.json();
-  const collections = await getCollectionsInfo();
+  const collections: CollectionCard[] | null = await response.json();
+  
 
   return (
     <main className="max-w-6xl mx-auto px-4 py-10">
