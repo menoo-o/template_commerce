@@ -1,6 +1,5 @@
 import { createClient } from '@/utils/supabase/server';
 import { CartItem } from '@/lib/types/types';
-
 type GuestOrder = {
   first_name: string;
   last_name: string;
