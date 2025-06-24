@@ -8,7 +8,7 @@ import { useCartStore } from '@/stores/useCartStore';
 function SuccessContent() {
   const searchParams = useSearchParams()
   const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null)
-  const { clearCart, cart}  = useCartStore();
+  const { clearCart}  = useCartStore();
 
  useEffect(() => {
   const id = searchParams.get('paymentIntentId')
