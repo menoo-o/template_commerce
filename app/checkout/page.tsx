@@ -80,7 +80,7 @@ export default function CheckoutPage() {
         address_line2: data.addressLine2,
         city: data.city,
         postcode: data.postcode,
-        cart: useCartStore.getState().cart,
+        cart,
         stripe_payment_intent_id: result.paymentIntentId,
 });
         router.push(`/success?paymentIntentId=${result.paymentIntentId}`);
