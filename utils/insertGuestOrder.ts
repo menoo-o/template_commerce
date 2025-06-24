@@ -1,9 +1,9 @@
+'use server';
+
 import { createClient } from '@/utils/supabase/server';
 import { GuestOrder } from '@/lib/types/types';
 
-export async function insertGuestOrder(params: Omit<GuestOrder, 'cart'> & {
-  cart: string // Serialize cart to JSON string
-}) {
+export async function insertGuestOrder(params: GuestOrder) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -13,7 +13,7 @@ export async function insertGuestOrder(params: Omit<GuestOrder, 'cart'> & {
         ...params,
         // country: 'UK', // auto-inserted or can be explicit
         // order_status: 'processing', // optional if default
-         cart: JSON.stringify(params.cart), // Ensure cart is serialized
+        
       },
     ]);
 
