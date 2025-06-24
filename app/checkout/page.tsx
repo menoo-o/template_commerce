@@ -14,7 +14,7 @@ import EmailInfo from '@/components/checkout/EmailInfo';
 import DeliveryAddressForm from '@/components/checkout/DeliveryAddressForm';
 import { PaymentSection } from '@/components/StripeCheckout/StripeCheckoutForm';
 import { OrderSummary } from '@/components/checkout/OrderSummary';
-// import { insertGuestOrder } from '@/utils/insertGuestOrder';
+import { insertGuestOrder } from '@/utils/insertGuestOrder';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -71,18 +71,18 @@ export default function CheckoutPage() {
     try {
       const result = await stripeFormRef.current.handleStripePayment();
       if (result.success && result.paymentIntentId) {
-//        await insertGuestOrder({
-//         first_name: data.fName,
-//         last_name: data.lName,
-//         email: data.email,
-//         phone: data.phone,
-//         address_line1: data.addressLine1,
-//         address_line2: data.addressLine2,
-//         city: data.city,
-//         postcode: data.postcode,
-//         cart,
-//         stripe_payment_intent_id: result.paymentIntentId,
-// });
+       await insertGuestOrder({
+        first_name: data.fName,
+        last_name: data.lName,
+        email: data.email,
+        phone: data.phone,
+        address_line1: data.addressLine1,
+        address_line2: data.addressLine2,
+        city: data.city,
+        postcode: data.postcode,
+        cart,
+        stripe_payment_intent_id: result.paymentIntentId,
+});
         router.push(`/success?paymentIntentId=${result.paymentIntentId}`);
         console.log(data)
       } else {
