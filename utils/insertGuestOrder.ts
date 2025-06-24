@@ -10,7 +10,7 @@ type GuestOrder = {
   address_line2?: string;
   city: string;
   postcode: string;
-  cart: CartItem[];
+  cart?: CartItem[];
   stripe_payment_intent_id: string;
 };
 
