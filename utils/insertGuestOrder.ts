@@ -1,20 +1,9 @@
 import { createClient } from '@/utils/supabase/server';
-import { CartItem } from '@/lib/types/types';
+import { GuestOrder } from '@/lib/types/types';
 
-type GuestOrder = {
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string;
-  address_line1: string;
-  address_line2?: string;
-  city: string;
-  postcode: string;
-  cart?: CartItem[];
-  stripe_payment_intent_id: string;
-};
-
-export async function insertGuestOrder(params: GuestOrder) {
+export async function insertGuestOrder(params: Omit<GuestOrder, 'cart'> & {
+  cart: string // Serialize cart to JSON string
+}) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -24,6 +13,7 @@ export async function insertGuestOrder(params: GuestOrder) {
         ...params,
         // country: 'UK', // auto-inserted or can be explicit
         // order_status: 'processing', // optional if default
+         cart: JSON.stringify(params.cart), // Ensure cart is serialized
       },
     ]);
 

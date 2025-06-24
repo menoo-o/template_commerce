@@ -71,6 +71,7 @@ export default function CheckoutPage() {
     try {
       const result = await stripeFormRef.current.handleStripePayment();
       if (result.success && result.paymentIntentId) {
+       const serializedCart = JSON.stringify(cart); 
        await insertGuestOrder({
         first_name: data.fName,
         last_name: data.lName,
@@ -80,9 +81,10 @@ export default function CheckoutPage() {
         address_line2: data.addressLine2,
         city: data.city,
         postcode: data.postcode,
-        // cart,
+        cart: serializedCart, // Pass serialized cart
         stripe_payment_intent_id: result.paymentIntentId,
-});
+      });
+
         router.push(`/success?paymentIntentId=${result.paymentIntentId}`);
         console.log(data)
       } else {

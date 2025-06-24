@@ -150,3 +150,16 @@ export interface StripeCheckoutFormRef {
   handleStripePayment: () => Promise<{ success: boolean; paymentIntentId?: string }>;
 }
 
+// Guest Orders
+export type GuestOrder = {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  address_line1: string;
+  address_line2?: string;
+  city: string;
+  postcode: string;
+  cart?: CartItem[];
+  stripe_payment_intent_id: string;
+};
