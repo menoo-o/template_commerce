@@ -11,8 +11,6 @@ export async function insertGuestOrder(params: GuestOrder) {
     .insert([
       {
         ...params,
-        // country: 'UK', // auto-inserted or can be explicit
-        // order_status: 'processing', // optional if default
         
       },
     ]);
