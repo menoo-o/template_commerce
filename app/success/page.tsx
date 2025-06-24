@@ -4,17 +4,21 @@ import { useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useState } from 'react'
 import { useCartStore } from '@/stores/useCartStore';
 
+
 function SuccessContent() {
   const searchParams = useSearchParams()
   const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null)
-  const { clearCart}  = useCartStore();
+  const { clearCart, cart}  = useCartStore();
 
-useEffect(() => {
+ useEffect(() => {
   const id = searchParams.get('paymentIntentId')
   if (id) {
     setPaymentIntentId(id)
+
+
     clearCart(); // Now safe to do it
     console.log('Success Page Payment Intent ID:', id)
+
   }
 }, [searchParams, clearCart])
 

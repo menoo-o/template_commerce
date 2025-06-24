@@ -14,6 +14,7 @@ import EmailInfo from '@/components/checkout/EmailInfo';
 import DeliveryAddressForm from '@/components/checkout/DeliveryAddressForm';
 import { PaymentSection } from '@/components/StripeCheckout/StripeCheckoutForm';
 import { OrderSummary } from '@/components/checkout/OrderSummary';
+import { insertGuestOrder } from '@/utils/insertGuestOrder';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -60,7 +61,7 @@ export default function CheckoutPage() {
     loadPaymentIntent();
   }, [cart.length]);
 
-  const handleProgrammaticPayment = async (data: CombinedFormValues) => {
+    const handleProgrammaticPayment = async (data: CombinedFormValues) => {
     if (!stripeFormRef.current || !formState.isValid || amount <= 0) {
       if (amount <= 0) setFormError('Cart total must be greater than £0.');
       return;
@@ -70,12 +71,23 @@ export default function CheckoutPage() {
     try {
       const result = await stripeFormRef.current.handleStripePayment();
       if (result.success && result.paymentIntentId) {
-        console.log('Form data:', data);
-        console.log('PaymentIntent ID:', result.paymentIntentId);
+       await insertGuestOrder({
+        first_name: data.fName,
+        last_name: data.lName,
+        email: data.email,
+        phone: data.phone,
+        address_line1: data.addressLine1,
+        address_line2: data.addressLine2,
+        city: data.city,
+        postcode: data.postcode,
+        cart: useCartStore.getState().cart,
+        stripe_payment_intent_id: result.paymentIntentId,
+});
         router.push(`/success?paymentIntentId=${result.paymentIntentId}`);
         
       } else {
         setFormError('Payment failed. Please check your payment details.');
+    
       }
     } catch {
       setFormError('An error occurred during payment.');
@@ -143,19 +155,8 @@ export default function CheckoutPage() {
             >
               {isLoading ? (
                 <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v8h8a8 8 0 01-16 0z"
-                  />
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8h8a8 8 0 01-16 0z" />
                 </svg>
               ) : (
                 `Pay £${amount.toFixed(2)}`
