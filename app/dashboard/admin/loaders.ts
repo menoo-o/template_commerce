@@ -53,7 +53,7 @@ export async function getAdminDashboardData(): Promise<{ clients: Client[]; gues
     .select('*')
 
   if (orderError) {
-    console.error('❌ Failed to fetch guest orders:', orderError.message);
+    console.error('❌ Failed to fetch guest orderss:', orderError.message);
   } else {
     guestorders = guestData || [];
   }
