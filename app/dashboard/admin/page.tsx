@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import Link from 'next/link';
 
+//this is the admin page
 export default async function AdminDashboardPage() {
   const { clients, guestorders } = await getAdminDashboardData();
   const userName = 'Lucy'; // Replace this later with dynamic user name if needed
