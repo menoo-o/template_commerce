@@ -2,16 +2,20 @@
 
 import Link from 'next/link';
 import { supabaseApiCall } from '@/utils/SupabaseApiCall';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
+import { start } from 'repl';
+
 
 export default function Home() {
   const [value, setValue] = useState<{ project: string }[] | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   async function handleClick() {
-    const result = await supabaseApiCall();
-    setValue(result); // now state stores the returned data
-  }
-
+    startTransition(async () => {
+      const data = await supabaseApiCall()
+      setValue(data);
+    }
+  )}
 
   return (
     <main className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
@@ -36,10 +40,11 @@ export default function Home() {
           </Link>
 
           <button
-            className="inline-block w-full text-orange-500 border border-orange-500 py-2 px-4 rounded-md hover:bg-orange-50 transition"
-            onClick={handleClick}         
-          >
-              Press ME       
+            disabled={isPending}
+            className="inline-block w-full text-orange-500 border border-orange-500 py-2 px-4 rounded-md hover:bg-orange-50 transition disabled:opacity-50"
+            onClick={handleClick}
+           >
+           {isPending ? "Processing..." : "Press ME"} 
           </button>
            <pre>{JSON.stringify(value, null, 2)}</pre>
         </div>
