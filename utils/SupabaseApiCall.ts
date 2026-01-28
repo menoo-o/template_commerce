@@ -3,15 +3,28 @@
 import { createClient } from '@/utils/supabase/server';
 
 export async function supabaseApiCall(){
-  const supabase = await createClient();
-  const { data, error } = await supabase
-  .from('API_Call')
-  .select('project');
-
-    if (error) {
-        console.error('Supabase API Call Error:', error.message);
-        throw new Error('Failed to fetch data from Supabase');
+  try{
+    const supabase = await createClient();
+    const { data, error } = await supabase
+    .from('API_Call')
+    .select('project');
+    
+  if (error) {
+    return{
+      success:false,
+      message:"Db is temp unavailable",
     }
-
-    return data;
+  }
+  return{
+    success:true,
+    data,
+  }
+}catch(err){
+  const errorMsg = err instanceof Error ? err.message : String(err);
+  return{
+    success:false,
+    // make use of catch (err)
+    message:errorMsg 
+  }
+}
 }
