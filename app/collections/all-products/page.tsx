@@ -32,7 +32,7 @@ const collections: CollectionCard[] | null = await response.json();
         </div>
         <div className="w-full h-64 relative rounded overflow-hidden">
           <Image
-            src="/all.webp"
+            src="/hero-collection.jpg"
             alt="All Collections"
             fill
             className="object-cover rounded"
