@@ -1,7 +1,7 @@
 //This page shows all collections with their images and names
 // It fetches the collections data from the API and displays it in a grid format
 
-export const revalidate = 0; // Revalidate every 60 seconds
+export const revalidate = 86400; // Revalidate every 60 seconds
 
 import Image from 'next/image';
  import Link from 'next/link';
@@ -32,7 +32,7 @@ const collections: CollectionCard[] | null = await response.json();
         </div>
         <div className="w-full h-64 relative rounded overflow-hidden">
           <Image
-            src="/allcollections.png"
+            src="/all.webp"
             alt="All Collections"
             fill
             className="object-cover rounded"
