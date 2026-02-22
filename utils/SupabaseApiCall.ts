@@ -2,7 +2,15 @@
 
 import { createClient } from '@/utils/supabase/server';
 
-export async function supabaseApiCall(){
+interface ProjectRow {
+  project: string;
+}
+
+type ApiResponse =
+  | { success: true; data: ProjectRow[] }
+  | { success: false; message: string };
+
+export async function supabaseApiCall(): Promise<ApiResponse> {
   try{
     const supabase = await createClient();
     const { data, error } = await supabase

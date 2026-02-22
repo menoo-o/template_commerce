@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { supabaseApiCall } from '@/utils/SupabaseApiCall';
 import { useState, useTransition } from 'react';
-import { start } from 'repl';
+
 
 
 export default function Home() {
@@ -12,8 +12,12 @@ export default function Home() {
 
   async function handleClick() {
     startTransition(async () => {
-      const data = await supabaseApiCall()
-      setValue(data);
+      const dataDb = await supabaseApiCall()
+      if (dataDb.success) {
+        setValue(dataDb.data);
+      } else {
+        setValue([{ project: dataDb.message }]);
+      }
     }
   )}
 
@@ -33,7 +37,7 @@ export default function Home() {
 
           <Link
             // go to the shopping page
-            href="/products"
+            href="/collections/all-products"
             className="inline-block w-full text-orange-500 border border-orange-500 py-2 px-4 rounded-md hover:bg-orange-50 transition"
           >
             Login Later? Lets do some shopping          
